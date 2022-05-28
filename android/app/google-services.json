@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "902466562684",
+    "project_id": "cafe-doan3",
+    "storage_bucket": "cafe-doan3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:902466562684:android:ae543950bab9b12888f7f9",
+        "android_client_info": {
+          "package_name": "com.foodapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "902466562684-o138fq4ssct3bormjrv22qcup32prnu7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAyZJJetCkuGF_O3m8Jdp140E7Ub92tTkk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "902466562684-o138fq4ssct3bormjrv22qcup32prnu7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
