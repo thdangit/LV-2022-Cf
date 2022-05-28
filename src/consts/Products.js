@@ -1,17 +1,29 @@
 import firestore from '@react-native-firebase/firestore';
 import {useNavigation} from '@react-navigation/native';
 import {collection} from 'firebase/firestore';
-import React, {useEffect, useState} from 'react';
-import {Image, Text, View, Dimensions, StyleSheet} from 'react-native';
+import React, {useEffect, useState, useContext} from 'react';
+import {
+  Image,
+  Text,
+  View,
+  Dimensions,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
 import {FlatList, TouchableHighlight} from 'react-native-gesture-handler';
 import {db} from '../config-firebase';
 import COLORS from './colors';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import {useAppContext} from '../contexts/index';
 
 const {width} = Dimensions.get('screen');
 const cardWidth = width / 2 - 20;
+
 const Card = ({item}) => {
   const navigation = useNavigation();
+
+  const {cart, addToCart} = useAppContext();
+
   return (
     <TouchableHighlight
       underlayColor={COLORS.white}
@@ -46,14 +58,19 @@ const Card = ({item}) => {
               .replace(/\d(?=(\d{3})+\.)/g, '$&,')}{' '}
             VNĐ
           </Text>
-          <View style={style.addToCartBtn}>
+          <TouchableOpacity
+            style={style.addToCartBtn}
+            onPress={() => {
+              addToCart(item);
+            }}>
             <Icon name="add" size={20} color={COLORS.white} />
-          </View>
+          </TouchableOpacity>
         </View>
       </View>
     </TouchableHighlight>
   );
 };
+
 export function Products() {
   // const [newName, setNewName] = useState("");
   // const [newAge, setNewAge] = useState(0);
@@ -61,6 +78,7 @@ export function Products() {
   const [products, setProduct] = useState([]);
 
   const renderItem = ({item}) => <Card item={item} />;
+
   useEffect(() => {
     const getProduct = async () => {
       const data = await firestore().collection('products').get();
