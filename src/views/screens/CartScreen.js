@@ -6,8 +6,13 @@ import COLORS from '../../consts/colors';
 import foods from '../../consts/foods';
 import {PrimaryButton} from '../components/Button';
 
+import {useAppContext} from './../../contexts/index';
+
 const CartScreen = ({navigation}) => {
+  const {cart} = useAppContext();
+  console.log(cart);
   const CartCard = ({item}) => {
+    console.log(item);
     return (
       <View style={style.cartCard}>
         <Image source={item.image} style={{height: 80, width: 80}} />

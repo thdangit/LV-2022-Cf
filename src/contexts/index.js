@@ -5,7 +5,7 @@ export const CartContext = React.createContext();
 export function Context({children}) {
   const [cart, setCart] = useState([]);
 
-  console.log('cart ne', cart);
+  console.log('cart ne', {cart});
 
   // item : {item}
   const addToCart = (item) => {

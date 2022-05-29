@@ -113,7 +113,7 @@ const HomeScreen = ({navigation}) => {
       </TouchableHighlight>
     );
   };
-  // console.log(Product);
+
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: COLORS.white}}>
       <View style={style.header}>
@@ -153,12 +153,6 @@ const HomeScreen = ({navigation}) => {
       <View>
         <ListCategories />
       </View>
-      {/* <FlatList
-        showsVerticalScrollIndicator={false}
-        numColumns={2}
-        data={foods}
-        renderItem={({item}) => <Card food={item} />}
-      /> */}
       <Products />
     </SafeAreaView>
   );

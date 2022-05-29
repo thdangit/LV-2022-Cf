@@ -21,15 +21,10 @@ const cardWidth = width / 2 - 20;
 
 const Card = ({item}) => {
   const navigation = useNavigation();
-
   const {cart, addToCart} = useAppContext();
 
   return (
-    <TouchableHighlight
-      underlayColor={COLORS.white}
-      activeOpacity={0.9}
-      // onPress={() => navigation.navigate('DetailsScreen', item)}
-    >
+    <TouchableHighlight underlayColor={COLORS.white} activeOpacity={0.9}>
       <View style={style.card}>
         <View style={{alignItems: 'center', top: 10, left: -7}}>
           <Image
@@ -72,9 +67,6 @@ const Card = ({item}) => {
 };
 
 export function Products() {
-  // const [newName, setNewName] = useState("");
-  // const [newAge, setNewAge] = useState(0);
-
   const [products, setProduct] = useState([]);
 
   const renderItem = ({item}) => <Card item={item} />;
@@ -82,22 +74,12 @@ export function Products() {
   useEffect(() => {
     const getProduct = async () => {
       const data = await firestore().collection('products').get();
-      // const data = await getDocs(setProductCollectionRef);
       setProduct(data.docs.map((doc) => ({...doc.data(), id: doc.id})));
     };
 
     getProduct();
   }, []);
-  // console.log(products);
-  return (
-    <FlatList
-      data={products}
-      // showsVerticalScrollIndicator={false}
-      numColumns={2}
-      renderItem={renderItem}
-      // keyExtractor={(item) => item.name}
-    />
-  );
+  return <FlatList data={products} numColumns={2} renderItem={renderItem} />;
 }
 const style = StyleSheet.create({
   header: {
