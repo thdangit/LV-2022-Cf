@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -6,6 +6,8 @@ import {
   Text,
   Image,
   TouchableOpacity,
+  TextInput,
+  Alert,
 } from 'react-native';
 import {FlatList} from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -16,21 +18,20 @@ import {PrimaryButton} from '../components/Button';
 import {useAppContext} from './../../contexts/index';
 import {db} from '../../config-firebase';
 import {doc, setDoc} from 'firebase/firestore';
-
-// import {firestore} from '@react-native-firebase/firestore';
+import firestore from '@react-native-firebase/firestore';
+// import firebase from 'firebase';
+import firebase from '@react-native-firebase/app';
 
 const CartScreen = ({navigation}) => {
-  const {
-    cart,
-    handleXoaSP,
-    clearCart,
-    handleDecreaseIncrease,
-  } = useAppContext();
+  const [phone, setPhone] = useState('');
 
-  console.log('cart screen', cart);
+  const {cart, handleXoaSP, clearCart, handleDecreaseIncrease} =
+    useAppContext();
+
+  // console.log('cart screen', cart);
 
   const CartCard = ({item}) => {
-    console.log('item nè', item);
+    // console.log('item nè', item);
     return (
       <View style={style.cartCard}>
         <Image
@@ -95,21 +96,42 @@ const CartScreen = ({navigation}) => {
     for (var i = 0; i < cart.length; i++) {
       total = total + cart[i].gia * cart[i].quantity;
     }
-
+    // console.log('gia bill', total);
     return total;
   };
 
   const handleAddCartDB = (cart) => {
-    // console.log(cart);
-    // firestore()
-    //   .collection('Userss')
-    //   .add({
-    //     name: 'Ada Lovelace',
-    //     age: 30,
-    //   })
-    //   .then(() => {
-    //     console.log('User added!');
-    //   });
+    // console.log("'giỏ hang'", cart.length);
+    // // cart.map((item) => {
+    // //   console.log('item', item);
+    // // });
+    // console.log('phone', phone);
+
+    // const date = new Date().toLocaleString();
+    // console.log('datetime', date);
+
+    // let sum = handleTinhTong();
+    // console.log('Tổng bill', sum);
+
+    cart.length > 0
+      ? firestore()
+          .collection('Bill')
+          .add({
+            phone: phone,
+            datetime: new Date().toLocaleString(),
+            CartPrice: handleTinhTong(),
+            product: firebase.firestore.FieldValue.arrayUnion(...cart),
+          })
+          .then(() => {
+            // console.log('User added!');
+            Alert.alert('Thêm  thành công!');
+            clearCart();
+            setPhone('');
+          })
+          .catch((err) => {
+            Alert.alert('Err', err);
+          })
+      : Alert.alert('Giỏ hàng trống!!');
   };
 
   return (
@@ -117,6 +139,14 @@ const CartScreen = ({navigation}) => {
       <View style={style.header}>
         <Icon name="arrow-back-ios" size={28} onPress={navigation.goBack} />
         <Text style={{fontSize: 20, fontWeight: 'bold'}}>Cart</Text>
+      </View>
+      <View style={style.inputContainer}>
+        <TextInput
+          placeholder="Phone"
+          value={phone}
+          onChangeText={(number) => setPhone(number)}
+          style={style.input}
+        />
       </View>
       <FlatList
         showsVerticalScrollIndicator={false}
@@ -143,7 +173,9 @@ const CartScreen = ({navigation}) => {
               <View style={{marginHorizontal: 30}}>
                 <PrimaryButton
                   title="THANH TOÁN"
-                  onPress={handleAddCartDB(cart)}
+                  onPress={() => {
+                    handleAddCartDB(cart);
+                  }}
                 />
               </View>
               <View style={{marginHorizontal: 30, marginTop: 20}}>
@@ -189,6 +221,20 @@ const style = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignContent: 'center',
+  },
+  inputContainer: {
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    display: 'flex',
+  },
+  input: {
+    backgroundColor: '#E5E5E5',
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    borderRadius: 30,
+    marginTop: 8,
+    width: '80%',
   },
 });
 
