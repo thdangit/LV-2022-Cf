@@ -35,7 +35,7 @@ const Card = ({item}) => {
           />
         </View>
         <View style={{marginHorizontal: 20, marginTop: 10}}>
-          <Text style={{fontSize: 18, fontWeight: 'bold'}}>{item.name}</Text>
+          <Text style={{fontSize: 16, fontWeight: 'bold'}}>{item.name}</Text>
           <Text style={{fontSize: 14, color: COLORS.grey, marginTop: 2}}>
             {item.loai}
           </Text>
@@ -47,7 +47,7 @@ const Card = ({item}) => {
             flexDirection: 'row',
             justifyContent: 'space-between',
           }}>
-          <Text style={{fontSize: 18, fontWeight: 'bold'}}>
+          <Text style={{fontSize: 15, fontWeight: 'bold'}}>
             {Number(item.gia)
               .toFixed(1)
               .replace(/\d(?=(\d{3})+\.)/g, '$&,')}{' '}
@@ -58,7 +58,7 @@ const Card = ({item}) => {
             onPress={() => {
               addToCart(item);
             }}>
-            <Icon name="add" size={20} color={COLORS.white} />
+            <Icon name="check" size={20} color={COLORS.white} />
           </TouchableOpacity>
         </View>
       </View>
@@ -145,6 +145,7 @@ const style = StyleSheet.create({
     backgroundColor: COLORS.primary,
     justifyContent: 'center',
     alignItems: 'center',
+    marginLeft: 10,
   },
 });
 // export default Products;

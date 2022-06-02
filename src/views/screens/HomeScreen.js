@@ -119,12 +119,12 @@ const HomeScreen = ({navigation}) => {
       <View style={style.header}>
         <View>
           <View style={{flexDirection: 'row'}}>
-            <Text style={{fontSize: 28}}>Xin chào,</Text>
-            <Text style={{fontSize: 28, fontWeight: 'bold', marginLeft: 10}}>
+            <Text style={{fontSize: 24}}>Xin chào,</Text>
+            <Text style={{fontSize: 24, fontWeight: 'bold', marginLeft: 10}}>
               Hai Dang
             </Text>
           </View>
-          <Text style={{marginTop: 5, fontSize: 22, color: COLORS.grey}}>
+          <Text style={{marginTop: 5, fontSize: 20, color: COLORS.grey}}>
             Bạn muốn gì ngày hôm nay ?
           </Text>
         </View>

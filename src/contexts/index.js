@@ -1,4 +1,5 @@
 import React, {useState, useContext} from 'react';
+import {Alert} from 'react-native';
 
 export const CartContext = React.createContext();
 
@@ -18,6 +19,8 @@ export function Context({children}) {
       cloneCart[index].quantity += 1;
       setCart(cloneCart);
     }
+
+    Alert.alert('Thêm  thành công!');
   };
 
   // true la tang
@@ -31,8 +34,43 @@ export function Context({children}) {
     setCart([]);
   };
 
+  const handleXoaSP = (idSanPham) => {
+    let index = cart.findIndex((item) => {
+      return item.id === idSanPham;
+    });
+    if (index !== -1) {
+      let cloneCartList = [...cart];
+      cloneCartList.splice(index, 1);
+      setCart(cloneCartList);
+    }
+    console.log('xóa nè', idSanPham);
+  };
+
+  const handleDecreaseIncrease = (idSanPham, value) => {
+    let cloneCart = [...cart];
+    let index = cloneCart.findIndex((item) => {
+      return item.id === idSanPham;
+    });
+
+    if (index !== -1) {
+      cloneCart[index].quantity += value;
+    }
+
+    !cloneCart[index].quantity && cloneCart.splice(index, 1);
+
+    setCart(cloneCart);
+  };
+
   return (
-    <CartContext.Provider value={{cart, addToCart, clearCart, updateQuantity}}>
+    <CartContext.Provider
+      value={{
+        cart,
+        addToCart,
+        clearCart,
+        updateQuantity,
+        handleXoaSP,
+        handleDecreaseIncrease,
+      }}>
       {children}
     </CartContext.Provider>
   );

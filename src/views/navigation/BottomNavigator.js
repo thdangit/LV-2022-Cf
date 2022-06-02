@@ -63,11 +63,11 @@ const BottomNavigator = () => {
         }}
       />
       <Tab.Screen
-        name="Favorite"
+        name="Bill"
         component={HomeScreen}
         options={{
           tabBarIcon: ({color}) => (
-            <Icon name="favorite" color={color} size={28} />
+            <Icon name="receipt-long" color={color} size={28} />
           ),
         }}
       />
