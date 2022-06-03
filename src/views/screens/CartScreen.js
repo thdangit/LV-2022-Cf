@@ -101,18 +101,6 @@ const CartScreen = ({navigation}) => {
   };
 
   const handleAddCartDB = (cart) => {
-    // console.log("'giỏ hang'", cart.length);
-    // // cart.map((item) => {
-    // //   console.log('item', item);
-    // // });
-    // console.log('phone', phone);
-
-    // const date = new Date().toLocaleString();
-    // console.log('datetime', date);
-
-    // let sum = handleTinhTong();
-    // console.log('Tổng bill', sum);
-
     cart.length > 0
       ? firestore()
           .collection('Bill')
@@ -124,14 +112,14 @@ const CartScreen = ({navigation}) => {
           })
           .then(() => {
             // console.log('User added!');
-            Alert.alert('Thêm  thành công!');
+            Alert.alert('Thanh toán  thành công!');
             clearCart();
             setPhone('');
           })
           .catch((err) => {
             Alert.alert('Err', err);
           })
-      : Alert.alert('Giỏ hàng trống!!');
+      : Alert.alert('Chưa có sản phẩm trong giỏ hàng!!');
   };
 
   return (
@@ -235,6 +223,7 @@ const style = StyleSheet.create({
     borderRadius: 30,
     marginTop: 8,
     width: '80%',
+    marginBottom: 8,
   },
 });
 

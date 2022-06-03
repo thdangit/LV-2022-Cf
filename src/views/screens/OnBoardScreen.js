@@ -3,6 +3,7 @@ import {Text, StyleSheet, View, Image} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import COLORS from '../../consts/colors';
 import {PrimaryButton} from '../components/Button';
+import {useAppContext} from './../../contexts/index';
 
 const OnBoardScreen = ({navigation}) => {
   // const navigation = useNavigation();
@@ -14,6 +15,14 @@ const OnBoardScreen = ({navigation}) => {
   //       navigation.replace('Login');
   //     })
   //     .catch((error) => alert(error.message));
+  // };
+
+  const {GetUserUid} = useAppContext();
+  // console.log(GetUserUid);
+
+  // const handleStart = (GetUserUid) => {
+  //   getUserUid();
+  //   navigation.navigate('Home');
   // };
 
   return (
@@ -51,8 +60,11 @@ const OnBoardScreen = ({navigation}) => {
         </View>
         <View style={style.indicatorContainer}></View>
         <PrimaryButton
-          onPress={() => navigation.navigate('Home')}
-          title="Chấm công"
+          onPress={() => {
+            // GetUserUid();
+            navigation.navigate('Home');
+          }}
+          title="Start"
         />
       </View>
     </SafeAreaView>

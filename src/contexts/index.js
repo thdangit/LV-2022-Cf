@@ -1,5 +1,9 @@
-import React, {useState, useContext} from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import {Alert} from 'react-native';
+import {auth} from '../config-firebase';
+import firebase from '@react-native-firebase/app';
+import {onAuthStateChanged} from 'firebase/auth';
+import firestore from '@react-native-firebase/firestore';
 
 export const CartContext = React.createContext();
 
@@ -61,6 +65,45 @@ export function Context({children}) {
     setCart(cloneCart);
   };
 
+  // gettin current user uid
+  const GetUserUid = () => {
+    // const [uid, setUid] = useState(null);
+    // useEffect(() => {
+    //   auth.onAuthStateChanged((user) => {
+    //     if (user) {
+    //       setUid(user.uid);
+    //     }
+    //   });
+    // }, []);
+    // console.log('uid', uid);
+    // return uid;
+
+    firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        console.log(user.uid);
+        console.log(user.email);
+      }
+    });
+  };
+
+  const handleGetIdDoc = () => {
+    firestore()
+      .collection('Bill')
+      .get()
+      .then((querySnapshot) => {
+        // console.log('Total users: ', querySnapshot.size);
+
+        querySnapshot.forEach((doc) => {
+          console.log(
+            'Doc ID: ',
+            doc.id,
+            // documentSnapshot.data(),
+          );
+        });
+      });
+    // console.log('Bill', Bill);
+  };
+
   return (
     <CartContext.Provider
       value={{
@@ -70,6 +113,8 @@ export function Context({children}) {
         updateQuantity,
         handleXoaSP,
         handleDecreaseIncrease,
+        GetUserUid,
+        handleGetIdDoc,
       }}>
       {children}
     </CartContext.Provider>

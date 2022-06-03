@@ -6,6 +6,7 @@ import COLORS from '../../consts/colors';
 import {View} from 'react-native';
 import HomeScreen from '../screens/HomeScreen';
 import CartScreen from '../screens/CartScreen';
+import BillScreen from '../screens/BillScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -64,10 +65,10 @@ const BottomNavigator = () => {
       />
       <Tab.Screen
         name="Bill"
-        component={HomeScreen}
+        component={BillScreen}
         options={{
           tabBarIcon: ({color}) => (
-            <Icon name="receipt-long" color={color} size={28} />
+            <Icon name="qr-code" color={color} size={28} />
           ),
         }}
       />
