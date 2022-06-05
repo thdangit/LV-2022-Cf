@@ -9,8 +9,9 @@ export const CartContext = React.createContext();
 
 export function Context({children}) {
   const [cart, setCart] = useState([]);
+  const [idDoc, setIDDoc] = useState('');
 
-  console.log('cart ne', {cart});
+  // console.log('cart ne', {cart});
 
   // item : {item}
   const addToCart = (item) => {
@@ -24,7 +25,7 @@ export function Context({children}) {
       setCart(cloneCart);
     }
 
-    Alert.alert('Thêm  thành công!');
+    // Alert.alert('Thêm  thành công!');
   };
 
   // true la tang
@@ -47,7 +48,7 @@ export function Context({children}) {
       cloneCartList.splice(index, 1);
       setCart(cloneCartList);
     }
-    console.log('xóa nè', idSanPham);
+    // console.log('xóa nè', idSanPham);
   };
 
   const handleDecreaseIncrease = (idSanPham, value) => {
@@ -99,22 +100,37 @@ export function Context({children}) {
             doc.id,
             // documentSnapshot.data(),
           );
+          // return doc.id;
         });
       });
     // console.log('Bill', Bill);
   };
 
+  const getIDDoc = (IDDoc) => {
+    // console.log(IDDoc);
+
+    return setIDDoc(IDDoc);
+  };
+
+  const qty = cart.map((item) => {
+    return item.quantity;
+  });
+  const total = qty.reduce((a, b) => a + b, 0);
+  console.log('số lượng', total);
+
   return (
     <CartContext.Provider
       value={{
         cart,
+        idDoc,
         addToCart,
         clearCart,
         updateQuantity,
         handleXoaSP,
         handleDecreaseIncrease,
         GetUserUid,
-        handleGetIdDoc,
+        getIDDoc,
+        total,
       }}>
       {children}
     </CartContext.Provider>

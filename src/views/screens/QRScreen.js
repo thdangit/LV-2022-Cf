@@ -14,20 +14,22 @@ import {
 import {useAppContext} from './../../contexts/index';
 import firestore from '@react-native-firebase/firestore';
 
-const BillScreen = ({navigation}) => {
-  // const {handleGetIdDoc} = useAppContext();
-
+const QRScreen = ({navigation}) => {
+  const {getIDDoc, idDoc, cart, total, clearCart} = useAppContext();
+  //   console.log('qr total', total.toString());
+  console.log('total', total);
   const [name, setName] = useState('');
-  const [quantity, setQuantity] = useState(0);
+  const [quantity, setQuantity] = useState(total);
   const [qrvalue, setQrvalue] = useState('');
-  const handleCreateQR = (name) => {
-    name.length > 0
+  const handleCreateQR = (quantity, idDoc) => {
+    quantity.length > 0
       ? firestore()
           .collection('QRCode')
           .add({
             name: name,
             datetime: new Date().toLocaleString(),
             quantity: quantity,
+            id: idDoc,
           })
           .then(() => {
             // console.log('User added!');
@@ -35,11 +37,21 @@ const BillScreen = ({navigation}) => {
             setName('');
             setQuantity('');
             setQrvalue(quantity);
+            clearCart();
           })
           .catch((err) => {
             Alert.alert('Err', err);
           })
-      : Alert.alert('Vui lòng nhập tên nhận biết!!');
+      : Alert.alert('Vui lòng nhập số lượng!!');
+    console.log('quantity', quantity);
+  };
+  const handleClearQR = (quantity) => {
+    setName('');
+    setQuantity('');
+    clearCart();
+    setQrvalue('');
+    navigation.navigate('Cart');
+    console.log('so luong', quantity);
   };
 
   return (
@@ -50,9 +62,9 @@ const BillScreen = ({navigation}) => {
       </View>
       <View style={styles.container}>
         <QRCode
-          value={qrvalue ? qrvalue : 0}
+          value={qrvalue ? qrvalue : '0'}
           size={200}
-          color="black"
+          color="#F9813A"
           backgroundColor="white"
           logo={{
             url: 'https://raw.githubusercontent.com/AboutReact/sampleresource/master/logosmalltransparen.png',
@@ -60,9 +72,9 @@ const BillScreen = ({navigation}) => {
           logoSize={30}
           logoMargin={2}
           logoBorderRadius={15}
-          logoBackgroundColor="yellow"
+          logoBackgroundColor="#7A2B02"
         />
-        <Text style={styles.textStyle}>-------------------------</Text>
+        <Text style={styles.textStyle}> Số lượng: {total} </Text>
         <TextInput
           style={styles.textInputStyle}
           onChangeText={(name) => setName(name)}
@@ -73,24 +85,25 @@ const BillScreen = ({navigation}) => {
           style={styles.textInputStyle}
           onChangeText={(quantity) => setQuantity(quantity)}
           placeholder="Nhập số lượng"
-          value={quantity}
+          value={Number(quantity)}
+          keyboardType="numeric"
         />
         <TouchableOpacity
           style={styles.buttonStyle}
-          onPress={() => handleCreateQR(name)}>
-          <Text style={styles.buttonTextStyle}>Tạo QR Code</Text>
+          onPress={() => handleCreateQR(quantity, idDoc)}>
+          <Text style={styles.buttonTextStyle}>TẠO QR CODE</Text>
         </TouchableOpacity>
-        {/* <TouchableOpacity
+        <TouchableOpacity
           style={styles.buttonStyle}
-          onPress={() => setQrvalue(inputText)}>
-          <Text style={styles.buttonTextStyle}>Tạo QR Code</Text>
-        </TouchableOpacity> */}
+          onPress={() => handleClearQR(quantity)}>
+          <Text style={styles.buttonTextStyle}>CLEAR</Text>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
 };
 
-export default BillScreen;
+export default QRScreen;
 
 const styles = StyleSheet.create({
   header: {
@@ -139,5 +152,6 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     paddingVertical: 10,
     fontSize: 18,
+    fontWeight: 'bold',
   },
 });

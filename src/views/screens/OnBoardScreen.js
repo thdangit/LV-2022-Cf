@@ -6,24 +6,7 @@ import {PrimaryButton} from '../components/Button';
 import {useAppContext} from './../../contexts/index';
 
 const OnBoardScreen = ({navigation}) => {
-  // const navigation = useNavigation();
-
-  // const handleSignOut = () => {
-  //   auth
-  //     .signOut()
-  //     .then(() => {
-  //       navigation.replace('Login');
-  //     })
-  //     .catch((error) => alert(error.message));
-  // };
-
   const {GetUserUid} = useAppContext();
-  // console.log(GetUserUid);
-
-  // const handleStart = (GetUserUid) => {
-  //   getUserUid();
-  //   navigation.navigate('Home');
-  // };
 
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: COLORS.bgcf, marginTop: 0}}>

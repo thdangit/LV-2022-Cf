@@ -25,13 +25,9 @@ import firebase from '@react-native-firebase/app';
 const CartScreen = ({navigation}) => {
   const [phone, setPhone] = useState('');
 
-  const {cart, handleXoaSP, clearCart, handleDecreaseIncrease} =
+  const {cart, handleXoaSP, clearCart, handleDecreaseIncrease, getIDDoc} =
     useAppContext();
-
-  // console.log('cart screen', cart);
-
   const CartCard = ({item}) => {
-    // console.log('item nè', item);
     return (
       <View style={style.cartCard}>
         <Image
@@ -91,14 +87,19 @@ const CartScreen = ({navigation}) => {
     );
   };
 
+  // tổng bill
   const handleTinhTong = () => {
     var total = 0;
     for (var i = 0; i < cart.length; i++) {
       total = total + cart[i].gia * cart[i].quantity;
     }
-    // console.log('gia bill', total);
     return total;
   };
+
+  // tạo mảng số lượng
+  const qty = cart.map((item) => {
+    return item.quantity;
+  });
 
   const handleAddCartDB = (cart) => {
     cart.length > 0
@@ -110,11 +111,13 @@ const CartScreen = ({navigation}) => {
             CartPrice: handleTinhTong(),
             product: firebase.firestore.FieldValue.arrayUnion(...cart),
           })
-          .then(() => {
-            // console.log('User added!');
+          .then((doc) => {
+            const IDDoc = doc.id;
+            // console.log(IDDoc);
             Alert.alert('Thanh toán  thành công!');
-            clearCart();
             setPhone('');
+            getIDDoc(IDDoc);
+            navigation.navigate('QR');
           })
           .catch((err) => {
             Alert.alert('Err', err);
@@ -134,6 +137,7 @@ const CartScreen = ({navigation}) => {
           value={phone}
           onChangeText={(number) => setPhone(number)}
           style={style.input}
+          keyboardType="numeric"
         />
       </View>
       <FlatList
@@ -145,6 +149,17 @@ const CartScreen = ({navigation}) => {
         ListFooterComponent={() => (
           <>
             <View>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  marginVertical: 15,
+                }}>
+                <Text style={{fontSize: 18, fontWeight: 'bold'}}>Số lượng</Text>
+                <Text style={{fontSize: 18, fontWeight: 'bold'}}>
+                  {qty.reduce((a, b) => a + b, 0)}
+                </Text>
+              </View>
               <View
                 style={{
                   flexDirection: 'row',
@@ -168,7 +183,7 @@ const CartScreen = ({navigation}) => {
               </View>
               <View style={{marginHorizontal: 30, marginTop: 20}}>
                 <PrimaryButton
-                  title="HỦY GIỎ HÀNG"
+                  title="CLEAR"
                   onPress={() => {
                     clearCart();
                   }}

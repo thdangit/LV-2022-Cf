@@ -3,14 +3,19 @@ import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import COLORS from '../../consts/colors';
-import {View} from 'react-native';
+import {View, Text, StyleSheet} from 'react-native';
 import HomeScreen from '../screens/HomeScreen';
 import CartScreen from '../screens/CartScreen';
-import BillScreen from '../screens/BillScreen';
+import {useAppContext} from '../../contexts/index';
+import QRScreen from './../screens/QRScreen';
 
 const Tab = createBottomTabNavigator();
 
 const BottomNavigator = () => {
+  const {cart} = useAppContext();
+  const qty = cart.map((item) => {
+    return item.quantity;
+  });
   return (
     <Tab.Navigator
       tabBarOptions={{
@@ -64,8 +69,8 @@ const BottomNavigator = () => {
         }}
       />
       <Tab.Screen
-        name="Bill"
-        component={BillScreen}
+        name="QR"
+        component={QRScreen}
         options={{
           tabBarIcon: ({color}) => (
             <Icon name="qr-code" color={color} size={28} />
@@ -77,12 +82,26 @@ const BottomNavigator = () => {
         component={CartScreen}
         options={{
           tabBarIcon: ({color}) => (
-            <Icon name="shopping-cart" color={color} size={28} />
+            <View>
+              <Text style={style.qty}>{qty.reduce((a, b) => a + b, 0)}</Text>
+              <Icon name="shopping-cart" color={color} size={28} />
+            </View>
           ),
         }}
       />
     </Tab.Navigator>
   );
 };
+
+const style = StyleSheet.create({
+  qty: {
+    fontSize: 12,
+    position: 'absolute',
+    top: -10,
+    right: -2,
+    fontWeight: 'bold',
+    color: '#F9813A',
+  },
+});
 
 export default BottomNavigator;
