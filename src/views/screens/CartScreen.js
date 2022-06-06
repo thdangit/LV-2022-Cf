@@ -110,6 +110,7 @@ const CartScreen = ({navigation}) => {
             datetime: new Date().toLocaleString(),
             CartPrice: handleTinhTong(),
             product: firebase.firestore.FieldValue.arrayUnion(...cart),
+            quantity: qty.reduce((a, b) => a + b, 0),
           })
           .then((doc) => {
             const IDDoc = doc.id;

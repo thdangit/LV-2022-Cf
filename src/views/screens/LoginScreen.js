@@ -7,6 +7,7 @@ import {
   TextInput,
   TouchableOpacity,
   View,
+  Alert,
 } from 'react-native';
 import {auth} from '../../config-firebase';
 import {
@@ -45,7 +46,10 @@ const LoginScreen = () => {
         const user = userCredentials.user;
         console.log('Logged in with:', user.email);
       })
-      .catch((error) => alert(error.message));
+      .catch((error) => {
+        // alert(error.message);
+        Alert.alert('Vui lòng kiểm tra lại thông tin!');
+      });
   };
 
   return (

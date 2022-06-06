@@ -16,7 +16,7 @@ import firestore from '@react-native-firebase/firestore';
 
 const QRScreen = ({navigation}) => {
   const {getIDDoc, idDoc, cart, total, clearCart} = useAppContext();
-  //   console.log('qr total', total.toString());
+  console.log('id doc ne', idDoc);
   console.log('total', total);
   const [name, setName] = useState('');
   const [quantity, setQuantity] = useState(total);
@@ -33,25 +33,27 @@ const QRScreen = ({navigation}) => {
           })
           .then(() => {
             // console.log('User added!');
+
             Alert.alert('Tạo qr thành công!');
             setName('');
             setQuantity('');
-            setQrvalue(quantity);
             clearCart();
           })
           .catch((err) => {
             Alert.alert('Err', err);
           })
       : Alert.alert('Vui lòng nhập số lượng!!');
-    console.log('quantity', quantity);
+
+    setQrvalue(idDoc);
+    console.log('id doc trong handle ne', idDoc);
+    console.log('soluong trong qr ne', quantity);
   };
   const handleClearQR = (quantity) => {
     setName('');
     setQuantity('');
     clearCart();
-    setQrvalue('');
+    // setQrvalue('');
     navigation.navigate('Cart');
-    console.log('so luong', quantity);
   };
 
   return (
@@ -62,7 +64,8 @@ const QRScreen = ({navigation}) => {
       </View>
       <View style={styles.container}>
         <QRCode
-          value={qrvalue ? qrvalue : '0'}
+          // value={[{soluong: quantity}, {id: idDoc}]}
+          value={idDoc ? idDoc : 'NaN'}
           size={200}
           color="#F9813A"
           backgroundColor="white"

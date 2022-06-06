@@ -8,6 +8,7 @@ import HomeScreen from '../screens/HomeScreen';
 import CartScreen from '../screens/CartScreen';
 import {useAppContext} from '../../contexts/index';
 import QRScreen from './../screens/QRScreen';
+import ScanerScreen from './../screens/ScanerScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -38,10 +39,10 @@ const BottomNavigator = () => {
       />
       <Tab.Screen
         name="LocalMall"
-        component={HomeScreen}
+        component={ScanerScreen}
         options={{
           tabBarIcon: ({color}) => (
-            <Icon name="local-mall" color={color} size={28} />
+            <Icon name="qr-code-scanner" color={color} size={28} />
           ),
         }}
       />
