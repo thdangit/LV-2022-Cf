@@ -21,7 +21,7 @@ const QRScreen = ({navigation}) => {
   const [name, setName] = useState('');
   const [quantity, setQuantity] = useState(total);
   const [qrvalue, setQrvalue] = useState('');
-  const handleCreateQR = (quantity, idDoc) => {
+  const handleCreateQR = (quantity) => {
     quantity.length > 0
       ? firestore()
           .collection('QRCode')
@@ -29,7 +29,6 @@ const QRScreen = ({navigation}) => {
             name: name,
             datetime: new Date().toLocaleString(),
             quantity: quantity,
-            id: idDoc,
           })
           .then(() => {
             // console.log('User added!');
@@ -45,8 +44,8 @@ const QRScreen = ({navigation}) => {
       : Alert.alert('Vui lòng nhập số lượng!!');
 
     setQrvalue(idDoc);
-    console.log('id doc trong handle ne', idDoc);
-    console.log('soluong trong qr ne', quantity);
+    // console.log('id doc trong handle ne', idDoc);
+    // console.log('soluong trong qr ne', quantity);
   };
   const handleClearQR = (quantity) => {
     setName('');
@@ -88,7 +87,7 @@ const QRScreen = ({navigation}) => {
           style={styles.textInputStyle}
           onChangeText={(quantity) => setQuantity(quantity)}
           placeholder="Nhập số lượng"
-          value={Number(quantity)}
+          value={quantity}
           keyboardType="numeric"
         />
         <TouchableOpacity

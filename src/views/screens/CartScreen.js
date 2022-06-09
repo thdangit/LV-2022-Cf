@@ -118,12 +118,18 @@ const CartScreen = ({navigation}) => {
             Alert.alert('Thanh toán  thành công!');
             setPhone('');
             getIDDoc(IDDoc);
-            navigation.navigate('QR');
+            clearCart();
+            navigation.navigate('HomeScreen');
           })
           .catch((err) => {
             Alert.alert('Err', err);
           })
       : Alert.alert('Chưa có sản phẩm trong giỏ hàng!!');
+  };
+
+  const handleScanerQR = () => {
+    // console.log('scanner nè');
+    navigation.navigate('QRScanner');
   };
 
   return (
@@ -134,12 +140,16 @@ const CartScreen = ({navigation}) => {
       </View>
       <View style={style.inputContainer}>
         <TextInput
-          placeholder="Phone"
+          placeholder="Phone.."
           value={phone}
           onChangeText={(number) => setPhone(number)}
           style={style.input}
           keyboardType="numeric"
         />
+
+        <TouchableOpacity style={{marginLeft: 12}} onPress={handleScanerQR}>
+          <Icon name="photo-camera" size={40} color={COLORS.primary} />
+        </TouchableOpacity>
       </View>
       <FlatList
         showsVerticalScrollIndicator={false}
@@ -231,15 +241,26 @@ const style = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     display: 'flex',
+    flexDirection: 'row',
+    paddingHorizontal: 20,
   },
   input: {
     backgroundColor: '#E5E5E5',
     paddingHorizontal: 15,
     paddingVertical: 10,
-    borderRadius: 30,
+    borderRadius: 10,
     marginTop: 8,
-    width: '80%',
+    width: '85%',
     marginBottom: 8,
+  },
+  sortBtn: {
+    width: 50,
+    height: 50,
+    marginLeft: 10,
+    backgroundColor: COLORS.primary,
+    borderRadius: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

@@ -4,12 +4,32 @@ import {
   View,
   SafeAreaView,
   TouchableOpacity,
+  Linking,
 } from 'react-native';
 import React from 'react';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import COLORS from '../../consts/colors';
+import {useAppContext} from './../../contexts/index';
+import QRCodeScanner from 'react-native-qrcode-scanner';
+import {RNCamera} from 'react-native-camera';
 
 const ScanerScreen = ({navigation}) => {
+  const {idDoc, handleGetIdDoc, handleGetIDBill} = useAppContext();
+  console.log('scanner', idDoc);
+
+  const handleUpdateQR = () => {
+    const arrIDDoc = handleGetIdDoc();
+    // return array;
+    console.log(arrIDDoc);
+    // let index = arrIDDoc.map(item =>{
+    //   return item ===
+    // })
+    const test = handleGetIDBill();
+    console.log('test nè', test);
+  };
+  const onSuccess = (e) => {
+    console.log('object');
+  };
   return (
     <SafeAreaView style={{backgroundColor: COLORS.white, flex: 1}}>
       <View style={styles.header}>
@@ -19,16 +39,32 @@ const ScanerScreen = ({navigation}) => {
       <View style={styles.container}>
         <Text>------------------------------</Text>
       </View>
-      <View style={styles.container}>
-        <Text style={styles.scanner}></Text>
-      </View>
+
+      <QRCodeScanner
+        onRead={onSuccess}
+        flashMode={RNCamera.Constants.FlashMode.auto}
+        // topContent={
+        //   <Text style={styles.centerText}>
+        //     Go to{' '}
+        //     <Text style={styles.textBold}>wikipedia.org/wiki/QR_code</Text> on
+        //     your computer and scan the QR code.
+        //   </Text>
+        // }
+        // bottomContent={
+        //   <TouchableOpacity style={styles.buttonTouchable}>
+        //     <Text style={styles.buttonText}>OK. Got it!</Text>
+        //   </TouchableOpacity>
+        // }
+      />
 
       <View style={styles.container}>
         <View style={styles.content}>
-          <Text>ID:</Text>
+          <Text>ID: {idDoc}</Text>
           <Text>Số lượng:</Text>
         </View>
-        <TouchableOpacity style={styles.buttonStyle}>
+        <TouchableOpacity
+          style={styles.buttonStyle}
+          onPress={() => handleUpdateQR()}>
           <Text style={styles.buttonTextStyle}>UPDATE</Text>
         </TouchableOpacity>
       </View>
@@ -78,5 +114,27 @@ const styles = StyleSheet.create({
     color: '#fff',
     height: 50,
     marginTop: 30,
+  },
+  rnCamera: {
+    flex: 1,
+    width: '94%',
+    alignSelf: 'center',
+  },
+  centerText: {
+    flex: 1,
+    fontSize: 18,
+    padding: 32,
+    color: '#777',
+  },
+  textBold: {
+    fontWeight: '500',
+    color: '#000',
+  },
+  buttonText: {
+    fontSize: 21,
+    color: 'rgb(0,122,255)',
+  },
+  buttonTouchable: {
+    padding: 16,
   },
 });

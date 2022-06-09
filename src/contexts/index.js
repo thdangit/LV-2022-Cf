@@ -100,10 +100,21 @@ export function Context({children}) {
             doc.id,
             // documentSnapshot.data(),
           );
-          // return doc.id;
+          return doc.id;
         });
       });
     // console.log('Bill', Bill);
+  };
+
+  const handleGetIDBill = () => {
+    firestore()
+      .collection('QRCode')
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          console.log(doc.data().id);
+        });
+      });
   };
 
   const getIDDoc = (IDDoc) => {
@@ -131,6 +142,8 @@ export function Context({children}) {
         GetUserUid,
         getIDDoc,
         total,
+        handleGetIdDoc,
+        handleGetIDBill,
       }}>
       {children}
     </CartContext.Provider>

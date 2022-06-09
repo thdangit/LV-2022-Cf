@@ -1,6 +1,7 @@
 import firestore from '@react-native-firebase/firestore';
 import {useNavigation} from '@react-navigation/native';
 import {collection} from 'firebase/firestore';
+
 import React, {useEffect, useState, useContext} from 'react';
 import {
   Image,
@@ -26,16 +27,16 @@ const Card = ({item}) => {
   return (
     <TouchableHighlight underlayColor={COLORS.white} activeOpacity={0.9}>
       <View style={style.card}>
-        <View style={{alignItems: 'center', top: 10, left: -7}}>
+        <View style={{alignItems: 'center', top: 10, left: 0}}>
           <Image
             source={{
               uri: item.hinhanh.url,
             }}
-            style={{height: 120, width: 120}}
+            style={{height: 120, width: 135, objectFit: 'cover'}}
           />
         </View>
         <View style={{marginHorizontal: 20, marginTop: 10}}>
-          <Text style={{fontSize: 16, fontWeight: 'bold'}}>{item.name}</Text>
+          <Text style={style.textName}>{item.name}</Text>
           <Text style={{fontSize: 14, color: COLORS.grey, marginTop: 2}}>
             {item.loai}
           </Text>
@@ -58,7 +59,7 @@ const Card = ({item}) => {
             onPress={() => {
               addToCart(item);
             }}>
-            <Icon name="check" size={20} color={COLORS.white} />
+            <Icon name="shopping-cart" size={17} color={COLORS.white} />
           </TouchableOpacity>
         </View>
       </View>
@@ -145,7 +146,16 @@ const style = StyleSheet.create({
     backgroundColor: COLORS.primary,
     justifyContent: 'center',
     alignItems: 'center',
-    marginLeft: 10,
+    marginRight: -5,
+    marginTop: -5,
+  },
+  textName: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    width: '100%',
+    height: 20,
+    backgroundColor: '#fff',
+    marginTop: 3,
   },
 });
 // export default Products;

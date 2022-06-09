@@ -41,8 +41,9 @@ const OnBoardScreen = ({navigation}) => {
             Chúc bạn một ngày làm việc tốt lành!
           </Text>
         </View>
-        <View style={style.indicatorContainer}></View>
+        {/* <View style={style.indicatorContainer}></View> */}
         <PrimaryButton
+          style={{marginTop: -20}}
           onPress={() => {
             // GetUserUid();
             navigation.navigate('Home');
@@ -61,13 +62,13 @@ const style = StyleSheet.create({
     justifyContent: 'space-between',
     paddingBottom: 40,
   },
-  indicatorContainer: {
-    height: 50,
-    flex: 1,
-    justifyContent: 'center',
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
+  // indicatorContainer: {
+  //   height: 50,
+  //   flex: 1,
+  //   justifyContent: 'center',
+  //   flexDirection: 'row',
+  //   alignItems: 'center',
+  // },
   currentIndicator: {
     height: 12,
     width: 30,

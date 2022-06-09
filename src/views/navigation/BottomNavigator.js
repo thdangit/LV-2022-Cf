@@ -38,7 +38,7 @@ const BottomNavigator = () => {
         }}
       />
       <Tab.Screen
-        name="LocalMall"
+        name="QRScanner"
         component={ScanerScreen}
         options={{
           tabBarIcon: ({color}) => (
