@@ -39,7 +39,7 @@ const QRScreen = ({navigation}) => {
           .add({
             name: name,
             datetime: new Date().toLocaleString(),
-            quantity: quantity,
+            quantity: Number(quantity),
             phone: phone,
           })
           .then((doc) => {
@@ -49,6 +49,7 @@ const QRScreen = ({navigation}) => {
             setQrvalue(idQR);
             Alert.alert('Tạo qr thành công!');
             setName('');
+            setPhone('');
             setQuantity('');
             clearCart();
           })
@@ -116,6 +117,7 @@ const QRScreen = ({navigation}) => {
           placeholder="Số lượng"
           value={quantity}
           keyboardType="numeric"
+          type="number"
         />
         <TouchableOpacity
           style={styles.buttonStyle}

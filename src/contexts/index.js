@@ -182,6 +182,7 @@ export function Context({children}) {
         idQR,
         clearIDQR,
         handleGetIdDocQRCode,
+        qty,
       }}>
       {children}
     </CartContext.Provider>

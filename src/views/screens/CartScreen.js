@@ -23,10 +23,10 @@ import firestore from '@react-native-firebase/firestore';
 import firebase from '@react-native-firebase/app';
 
 const CartScreen = ({navigation}) => {
+  const {cart, handleXoaSP, clearCart, handleDecreaseIncrease, getIDDoc, qty} =
+    useAppContext();
   const [phone, setPhone] = useState('');
 
-  const {cart, handleXoaSP, clearCart, handleDecreaseIncrease, getIDDoc} =
-    useAppContext();
   const CartCard = ({item}) => {
     return (
       <View style={style.cartCard}>
@@ -96,11 +96,6 @@ const CartScreen = ({navigation}) => {
     return total;
   };
 
-  // tạo mảng số lượng
-  const qty = cart.map((item) => {
-    return item.quantity;
-  });
-
   const handleAddCartDB = (cart) => {
     cart.length > 0
       ? firestore()
@@ -129,11 +124,11 @@ const CartScreen = ({navigation}) => {
 
   const handleScanerQR = (cart) => {
     navigation.navigate('QRScanner');
-    console.log('tìm quantity', cart);
-    console.log(
-      'số lượng',
-      qty.reduce((a, b) => a + b, 0),
-    );
+    // console.log('tìm quantity', cart);
+    // console.log(
+    //   'số lượng',
+    //   qty.reduce((a, b) => a + b, 0),
+    // );
   };
 
   return (
