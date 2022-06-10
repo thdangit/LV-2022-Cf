@@ -10,6 +10,9 @@ export const CartContext = React.createContext();
 export function Context({children}) {
   const [cart, setCart] = useState([]);
   const [idDoc, setIDDoc] = useState('');
+  const [idQR, setIdQR] = useState('');
+  const [phone, setPhone] = useState('');
+  const [arrIdQR, setArrIdQR] = useState([]);
 
   // console.log('cart ne', {cart});
 
@@ -37,6 +40,10 @@ export function Context({children}) {
 
   const clearCart = () => {
     setCart([]);
+    // setIdQR(null);
+  };
+  const clearIDQR = () => {
+    setIdQR('No data');
   };
 
   const handleXoaSP = (idSanPham) => {
@@ -68,17 +75,6 @@ export function Context({children}) {
 
   // gettin current user uid
   const GetUserUid = () => {
-    // const [uid, setUid] = useState(null);
-    // useEffect(() => {
-    //   auth.onAuthStateChanged((user) => {
-    //     if (user) {
-    //       setUid(user.uid);
-    //     }
-    //   });
-    // }, []);
-    // console.log('uid', uid);
-    // return uid;
-
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
         console.log(user.uid);
@@ -87,13 +83,13 @@ export function Context({children}) {
     });
   };
 
+  //get id doc bill
   const handleGetIdDoc = () => {
     firestore()
       .collection('Bill')
       .get()
       .then((querySnapshot) => {
         // console.log('Total users: ', querySnapshot.size);
-
         querySnapshot.forEach((doc) => {
           console.log(
             'Doc ID: ',
@@ -105,7 +101,7 @@ export function Context({children}) {
       });
     // console.log('Bill', Bill);
   };
-
+  // handleGetIdDoc();
   const handleGetIDBill = () => {
     firestore()
       .collection('QRCode')
@@ -119,15 +115,52 @@ export function Context({children}) {
 
   const getIDDoc = (IDDoc) => {
     // console.log(IDDoc);
-
     return setIDDoc(IDDoc);
   };
 
+  //get id doc qr
+
+  const getIdQR = (idQR) => {
+    return setIdQR(idQR);
+  };
+
+  const getIDDocQRCode = () => {
+    firebase()
+      .collection('QRCode')
+      .get()
+      .then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          console.log(doc.data().id);
+          return doc.id;
+        });
+      });
+  };
+
+  // getIDDocQRCode();
+
+  //get id doc qr
+  const handleGetIdDocQRCode = () => {
+    firestore()
+      .collection('QRCode')
+      .get()
+      .then((querySnapshot) => {
+        // console.log('Total users: ', querySnapshot.size);
+        querySnapshot.forEach((doc) => {
+          // documentSnapshot.data(),
+          console.log('doc', doc.data());
+        });
+      });
+    // console.log('Bill', Bill);
+    // console.log('arrIdQR', arrIdQR);
+  };
+  // handleGetIdDocQRCode();
+
+  // tinh so luong
   const qty = cart.map((item) => {
     return item.quantity;
   });
   const total = qty.reduce((a, b) => a + b, 0);
-  console.log('số lượng', total);
+  // console.log('số lượng', total);
 
   return (
     <CartContext.Provider
@@ -144,6 +177,11 @@ export function Context({children}) {
         total,
         handleGetIdDoc,
         handleGetIDBill,
+        getIDDocQRCode,
+        getIdQR,
+        idQR,
+        clearIDQR,
+        handleGetIdDocQRCode,
       }}>
       {children}
     </CartContext.Provider>

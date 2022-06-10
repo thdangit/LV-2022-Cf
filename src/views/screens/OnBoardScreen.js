@@ -6,7 +6,7 @@ import {PrimaryButton} from '../components/Button';
 import {useAppContext} from './../../contexts/index';
 
 const OnBoardScreen = ({navigation}) => {
-  const {GetUserUid} = useAppContext();
+  // const {GetUserUid} = useAppContext();
 
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: COLORS.bgcf, marginTop: 0}}>

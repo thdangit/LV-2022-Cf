@@ -5,30 +5,61 @@ import {
   SafeAreaView,
   TouchableOpacity,
   Linking,
+  Alert,
 } from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import COLORS from '../../consts/colors';
 import {useAppContext} from './../../contexts/index';
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import {RNCamera} from 'react-native-camera';
+import firebase from '@react-native-firebase/app';
+import firestore from '@react-native-firebase/firestore';
 
 const ScanerScreen = ({navigation}) => {
-  const {idDoc, handleGetIdDoc, handleGetIDBill} = useAppContext();
-  console.log('scanner', idDoc);
+  const {idDoc, handleGetIdDoc, handleGetIDBill, cart, handleGetIdDocQRCode} =
+    useAppContext();
 
-  const handleUpdateQR = () => {
-    const arrIDDoc = handleGetIdDoc();
-    // return array;
-    console.log(arrIDDoc);
-    // let index = arrIDDoc.map(item =>{
-    //   return item ===
-    // })
-    const test = handleGetIDBill();
-    console.log('test nè', test);
-  };
-  const onSuccess = (e) => {
-    console.log('object');
+  const [qtt, setQtt] = useState(0);
+  const [idScanner, setIdScanner] = useState('');
+
+  const qty = cart.map((item) => {
+    return item.quantity;
+  });
+
+  const sl = qty.reduce((a, b) => a + b, 0);
+
+  const handleUpdateQR = (idScanner, qtt) => {
+    //get quantity current in QRCode
+    idScanner
+      ? firestore()
+          .collection('QRCode')
+          .doc(idScanner)
+          .get()
+          .then((documentSnapshot) => {
+            // console.log('qr exists: ', documentSnapshot.exists);
+            if (documentSnapshot.exists) {
+              // console.log('qr data quantity: ', documentSnapshot.data().quantity);
+              const quantityCR = documentSnapshot.data().quantity;
+              setQtt(quantityCR);
+            }
+          })
+      : Alert.alert('Cập nhật thành công!!');
+
+    console.log('số lượng hiện tại', qtt);
+
+    firestore()
+      .collection('QRCode')
+      .doc(idScanner)
+      .update({
+        quantity: qtt + sl,
+      })
+      .then(() => {
+        Alert.alert('Cập nhật thành công!!');
+        setIdScanner('');
+        navigation.navigate('Cart');
+      })
+      .catch((err) => console.log(err));
   };
   return (
     <SafeAreaView style={{backgroundColor: COLORS.white, flex: 1}}>
@@ -41,31 +72,26 @@ const ScanerScreen = ({navigation}) => {
       </View>
 
       <QRCodeScanner
-        onRead={onSuccess}
+        style={styles.qrcode}
+        onRead={({data}) => setIdScanner(data)}
         flashMode={RNCamera.Constants.FlashMode.auto}
-        // topContent={
-        //   <Text style={styles.centerText}>
-        //     Go to{' '}
-        //     <Text style={styles.textBold}>wikipedia.org/wiki/QR_code</Text> on
-        //     your computer and scan the QR code.
-        //   </Text>
-        // }
-        // bottomContent={
-        //   <TouchableOpacity style={styles.buttonTouchable}>
-        //     <Text style={styles.buttonText}>OK. Got it!</Text>
-        //   </TouchableOpacity>
-        // }
       />
 
       <View style={styles.container}>
         <View style={styles.content}>
-          <Text>ID: {idDoc}</Text>
-          <Text>Số lượng:</Text>
+          <Text>ID: {idScanner}</Text>
+          <Text>Sản phẩm cập nhật: {qty.reduce((a, b) => a + b, 0)}</Text>
         </View>
+
         <TouchableOpacity
           style={styles.buttonStyle}
-          onPress={() => handleUpdateQR()}>
-          <Text style={styles.buttonTextStyle}>UPDATE</Text>
+          onPress={() => handleUpdateQR(idScanner, qtt)}>
+          <Text style={styles.buttonTextStyle}>CẬP NHẬT</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.buttonStyle}
+          onPress={() => setIdScanner('')}>
+          <Text style={styles.buttonTextStyle}>RELOAD</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -101,8 +127,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 30,
     marginTop: 30,
-    padding: 10,
+    padding: 5,
     width: '80%',
+    marginBottom: 30,
   },
   buttonTextStyle: {
     color: '#FFFFFF',
@@ -112,8 +139,8 @@ const styles = StyleSheet.create({
   },
   content: {
     color: '#fff',
-    height: 50,
-    marginTop: 30,
+    height: 40,
+    marginTop: 10,
   },
   rnCamera: {
     flex: 1,
@@ -123,7 +150,7 @@ const styles = StyleSheet.create({
   centerText: {
     flex: 1,
     fontSize: 18,
-    padding: 32,
+    padding: 10,
     color: '#777',
   },
   textBold: {

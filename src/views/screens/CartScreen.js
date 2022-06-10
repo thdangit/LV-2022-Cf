@@ -127,9 +127,13 @@ const CartScreen = ({navigation}) => {
       : Alert.alert('Chưa có sản phẩm trong giỏ hàng!!');
   };
 
-  const handleScanerQR = () => {
-    // console.log('scanner nè');
+  const handleScanerQR = (cart) => {
     navigation.navigate('QRScanner');
+    console.log('tìm quantity', cart);
+    console.log(
+      'số lượng',
+      qty.reduce((a, b) => a + b, 0),
+    );
   };
 
   return (
@@ -147,7 +151,11 @@ const CartScreen = ({navigation}) => {
           keyboardType="numeric"
         />
 
-        <TouchableOpacity style={{marginLeft: 12}} onPress={handleScanerQR}>
+        <TouchableOpacity
+          style={{marginLeft: 12}}
+          onPress={() => {
+            handleScanerQR(cart);
+          }}>
           <Icon name="photo-camera" size={40} color={COLORS.primary} />
         </TouchableOpacity>
       </View>

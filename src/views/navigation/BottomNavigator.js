@@ -98,10 +98,17 @@ const style = StyleSheet.create({
   qty: {
     fontSize: 12,
     position: 'absolute',
-    top: -10,
-    right: -2,
+    top: -16,
+    right: -10,
     fontWeight: 'bold',
-    color: '#F9813A',
+    color: '#fff',
+    width: 22,
+    height: 22,
+    backgroundColor: COLORS.primary,
+    zIndex: 2,
+    borderRadius: 20,
+    paddingLeft: 8,
+    paddingTop: 4,
   },
 });
 

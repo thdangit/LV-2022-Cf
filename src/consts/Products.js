@@ -32,7 +32,7 @@ const Card = ({item}) => {
             source={{
               uri: item.hinhanh.url,
             }}
-            style={{height: 120, width: 135, objectFit: 'cover'}}
+            style={{height: 120, width: 135}}
           />
         </View>
         <View style={{marginHorizontal: 20, marginTop: 10}}>

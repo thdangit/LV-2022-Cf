@@ -15,11 +15,22 @@ import {useAppContext} from './../../contexts/index';
 import firestore from '@react-native-firebase/firestore';
 
 const QRScreen = ({navigation}) => {
-  const {getIDDoc, idDoc, cart, total, clearCart} = useAppContext();
+  const {
+    getIDDoc,
+    idDoc,
+    cart,
+    total,
+    clearCart,
+    getIDDocQRCode,
+    getIdQR,
+    idQR,
+    clearIDQR,
+  } = useAppContext();
   console.log('id doc ne', idDoc);
   console.log('total', total);
   const [name, setName] = useState('');
-  const [quantity, setQuantity] = useState(total);
+  const [phone, setPhone] = useState('');
+  const [quantity, setQuantity] = useState(0);
   const [qrvalue, setQrvalue] = useState('');
   const handleCreateQR = (quantity) => {
     quantity.length > 0
@@ -29,10 +40,13 @@ const QRScreen = ({navigation}) => {
             name: name,
             datetime: new Date().toLocaleString(),
             quantity: quantity,
+            phone: phone,
           })
-          .then(() => {
+          .then((doc) => {
             // console.log('User added!');
-
+            const idQR = doc.id;
+            getIdQR(idQR);
+            setQrvalue(idQR);
             Alert.alert('Tạo qr thành công!');
             setName('');
             setQuantity('');
@@ -43,16 +57,17 @@ const QRScreen = ({navigation}) => {
           })
       : Alert.alert('Vui lòng nhập số lượng!!');
 
-    setQrvalue(idDoc);
-    // console.log('id doc trong handle ne', idDoc);
-    // console.log('soluong trong qr ne', quantity);
+    console.log('id doc trong handle ne', idDoc);
+    console.log('soluong trong qr ne', quantity);
   };
   const handleClearQR = (quantity) => {
     setName('');
-    setQuantity('');
+    // setQuantity('');
     clearCart();
     // setQrvalue('');
-    navigation.navigate('Cart');
+    clearIDQR();
+
+    navigation.navigate('HomeScreen');
   };
 
   return (
@@ -64,7 +79,7 @@ const QRScreen = ({navigation}) => {
       <View style={styles.container}>
         <QRCode
           // value={[{soluong: quantity}, {id: idDoc}]}
-          value={idDoc ? idDoc : 'NaN'}
+          value={idQR ? idQR : 'NaN'}
           size={200}
           color="#F9813A"
           backgroundColor="white"
@@ -76,17 +91,29 @@ const QRScreen = ({navigation}) => {
           logoBorderRadius={15}
           logoBackgroundColor="#7A2B02"
         />
-        <Text style={styles.textStyle}> Số lượng: {total} </Text>
+        {idQR ? (
+          <Text style={styles.textStyle}> ID: {idQR} </Text>
+        ) : (
+          <Text style={styles.textStyle}> Số lượng: {quantity} </Text>
+        )}
+
         <TextInput
           style={styles.textInputStyle}
           onChangeText={(name) => setName(name)}
-          placeholder="Nhập tên nhận biết"
+          placeholder="Tên nhận biết"
           value={name}
         />
         <TextInput
           style={styles.textInputStyle}
+          onChangeText={(phone) => setPhone(phone)}
+          placeholder="Điện thoại"
+          value={phone}
+          keyboardType="numeric"
+        />
+        <TextInput
+          style={styles.textInputStyle}
           onChangeText={(quantity) => setQuantity(quantity)}
-          placeholder="Nhập số lượng"
+          placeholder="Số lượng"
           value={quantity}
           keyboardType="numeric"
         />
@@ -96,8 +123,8 @@ const QRScreen = ({navigation}) => {
           <Text style={styles.buttonTextStyle}>TẠO QR CODE</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={styles.buttonStyle}
-          onPress={() => handleClearQR(quantity)}>
+          style={styles.buttonStyleClear}
+          onPress={() => handleClearQR(idQR)}>
           <Text style={styles.buttonTextStyle}>CLEAR</Text>
         </TouchableOpacity>
       </View>
@@ -147,7 +174,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderRadius: 30,
     marginTop: 30,
-    padding: 10,
+    padding: 5,
+    width: '80%',
+  },
+  buttonStyleClear: {
+    backgroundColor: '#F9813A',
+    borderWidth: 0,
+    color: '#FFFFFF',
+    borderColor: '#51D8C7',
+    alignItems: 'center',
+    borderRadius: 30,
+    marginTop: 10,
+    padding: 5,
     width: '80%',
   },
   buttonTextStyle: {
