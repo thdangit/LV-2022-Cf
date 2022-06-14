@@ -1,7 +1,7 @@
 const categories = [
   {
     id: '1',
-    name: 'Bạc xĩu',
+    name: 'Tất cả',
     image: require('../assets/catergories/bacxiu.png'),
   },
   {

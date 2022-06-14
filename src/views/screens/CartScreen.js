@@ -246,7 +246,7 @@ const style = StyleSheet.create({
     borderRadius: 30,
     paddingHorizontal: 0,
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'space-around',
     alignContent: 'center',
   },
   inputContainer: {

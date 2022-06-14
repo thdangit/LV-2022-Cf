@@ -83,14 +83,6 @@ const ScanerScreen = ({navigation}) => {
       : Alert.alert('Chưa có dữ liệu');
   };
 
-  const handleClea = () => {
-    setQuantityUpdate('');
-    setResulf('');
-    setQuantityCurrent('');
-    setScan('');
-    setslLyKM('');
-  };
-
   const noData = 'chưa quét';
   const noDataKM = 'Chưa có khuyến mãi!!';
 
@@ -126,10 +118,6 @@ const ScanerScreen = ({navigation}) => {
 
         <TouchableOpacity style={styles.buttonStyleUD} onPress={handleUpdateQR}>
           <Text style={styles.buttonTextStyle}>UPDATE</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity style={styles.buttonStyleUD} onPress={handleClea}>
-          <Text style={styles.buttonTextStyle}>CLEAR</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
