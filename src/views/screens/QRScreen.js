@@ -22,34 +22,31 @@ const QRScreen = ({navigation}) => {
     total,
     clearCart,
     getIDDocQRCode,
-    getIdQR,
     idQR,
     clearIDQR,
   } = useAppContext();
   console.log('id doc ne', idDoc);
   console.log('total', total);
   const [name, setName] = useState('');
-  const [phone, setPhone] = useState('');
   const [quantity, setQuantity] = useState(0);
   const [qrvalue, setQrvalue] = useState('');
+
   const handleCreateQR = (quantity) => {
-    quantity.length > 0
+    console.log('object', quantity);
+    quantity.length >= 0
       ? firestore()
           .collection('QRCode')
           .add({
             name: name,
             datetime: new Date().toLocaleString(),
             quantity: Number(quantity),
-            phone: phone,
           })
           .then((doc) => {
-            // console.log('User added!');
+            console.log('User added!');
             const idQR = doc.id;
-            getIdQR(idQR);
             setQrvalue(idQR);
             Alert.alert('Tạo qr thành công!');
             setName('');
-            setPhone('');
             setQuantity('');
             clearCart();
           })
@@ -58,8 +55,8 @@ const QRScreen = ({navigation}) => {
           })
       : Alert.alert('Vui lòng nhập số lượng!!');
 
-    console.log('id doc trong handle ne', idDoc);
-    console.log('soluong trong qr ne', quantity);
+    // console.log('id doc trong handle ne', idDoc);
+    // console.log('soluong trong qr ne', quantity);
   };
   const handleClearQR = (quantity) => {
     setName('');
@@ -103,13 +100,6 @@ const QRScreen = ({navigation}) => {
           onChangeText={(name) => setName(name)}
           placeholder="Tên nhận biết"
           value={name}
-        />
-        <TextInput
-          style={styles.textInputStyle}
-          onChangeText={(phone) => setPhone(phone)}
-          placeholder="Điện thoại"
-          value={phone}
-          keyboardType="numeric"
         />
         <TextInput
           style={styles.textInputStyle}

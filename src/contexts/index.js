@@ -14,7 +14,7 @@ export function Context({children}) {
   const [phone, setPhone] = useState('');
   const [arrIdQR, setArrIdQR] = useState([]);
 
-  // console.log('cart ne', {cart});
+  console.log('idQR ne', idQR);
 
   // item : {item}
   const addToCart = (item) => {

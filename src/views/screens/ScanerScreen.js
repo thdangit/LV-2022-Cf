@@ -17,7 +17,7 @@ import firebase from '@react-native-firebase/app';
 import firestore from '@react-native-firebase/firestore';
 
 const ScanerScreen = ({navigation}) => {
-  const {total} = useAppContext();
+  const {total, getIdQR} = useAppContext();
   const scanner = useRef(null);
   const [scan, setScan] = useState(false);
   const [resulf, setResulf] = useState(null);
@@ -25,14 +25,13 @@ const ScanerScreen = ({navigation}) => {
   const [quantityUpdate, setQuantityUpdate] = useState(null);
   const [slLyKM, setslLyKM] = useState(null);
 
-  const SLKhuyenMai = 10;
-
   useEffect(() => {
     setResulf(null);
   }, []);
 
   const onSuccess = (e) => {
     const id = e.data;
+    getIdQR(id);
     setResulf(id);
     setScan(false);
     firestore()
@@ -43,10 +42,10 @@ const ScanerScreen = ({navigation}) => {
         if (doc.exists) {
           const qtycurrent = doc.data().quantity;
           setQuantityCurrent(qtycurrent);
-          console.log('số lượng ly trong qr quét đc', quantityCurrent);
+          console.log('số lượng ly trong qr quét đc', qtycurrent);
           console.log('số lượng  total', total);
 
-          const qtyUpdate = Number(quantityCurrent) + Number(total);
+          const qtyUpdate = qtycurrent + total;
 
           console.log('số lượng tổng cộng update + total', qtyUpdate);
 
@@ -64,6 +63,7 @@ const ScanerScreen = ({navigation}) => {
   };
 
   const handleUpdateQR = () => {
+    // console.log('first');
     resulf
       ? firestore()
           .collection('QRCode')
@@ -76,11 +76,23 @@ const ScanerScreen = ({navigation}) => {
             Alert.alert('Cập nhật thành công!!');
             setResulf('');
             setQuantityCurrent('');
+            setQuantityUpdate('');
             navigation.navigate('Cart');
           })
           .catch((err) => console.log(err))
       : Alert.alert('Chưa có dữ liệu');
   };
+
+  const handleClea = () => {
+    setQuantityUpdate('');
+    setResulf('');
+    setQuantityCurrent('');
+    setScan('');
+    setslLyKM('');
+  };
+
+  const noData = 'chưa quét';
+  const noDataKM = 'Chưa có khuyến mãi!!';
 
   return !scan ? (
     <SafeAreaView style={{backgroundColor: COLORS.white, flex: 1}}>
@@ -90,21 +102,19 @@ const ScanerScreen = ({navigation}) => {
       </View>
       <View style={styles.container}>
         <View style={styles.content}>
+          <Text style={styles.contentText}>ID: {resulf}</Text>
           <Text style={styles.contentText}>
-            ID: {resulf ? resulf : 'Chưa quét'}
-          </Text>
-          <Text style={styles.contentText}>
-            Số ly hiện có: {quantityCurrent ? quantityCurrent : 'Chưa quét'}
+            Số ly hiện có: {quantityCurrent}
           </Text>
           <Text style={styles.contentText}>Số ly mua: {total}</Text>
         </View>
 
         <View style={styles.content}>
           <Text style={styles.contentText}>
-            Số lượng ly khuyến mãi: {slLyKM ? slLyKM : 'Chưa có khuyến mãi'}
+            Số lượng ly khuyến mãi: {slLyKM}
           </Text>
           <Text style={styles.contentText}>
-            Tổng ly tích được: {quantityUpdate ? quantityUpdate : 'Chưa quét'}
+            Tổng ly tích được: {quantityUpdate}
           </Text>
         </View>
 
@@ -113,8 +123,13 @@ const ScanerScreen = ({navigation}) => {
           onPress={() => setScan(true)}>
           <Text style={styles.buttonTextStyle}>START SCAN</Text>
         </TouchableOpacity>
+
         <TouchableOpacity style={styles.buttonStyleUD} onPress={handleUpdateQR}>
           <Text style={styles.buttonTextStyle}>UPDATE</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.buttonStyleUD} onPress={handleClea}>
+          <Text style={styles.buttonTextStyle}>CLEAR</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>

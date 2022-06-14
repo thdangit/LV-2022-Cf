@@ -23,8 +23,15 @@ import firestore from '@react-native-firebase/firestore';
 import firebase from '@react-native-firebase/app';
 
 const CartScreen = ({navigation}) => {
-  const {cart, handleXoaSP, clearCart, handleDecreaseIncrease, getIDDoc, qty} =
-    useAppContext();
+  const {
+    cart,
+    handleXoaSP,
+    clearCart,
+    handleDecreaseIncrease,
+    getIDDoc,
+    qty,
+    idQR,
+  } = useAppContext();
   const [phone, setPhone] = useState('');
 
   const CartCard = ({item}) => {
@@ -96,7 +103,9 @@ const CartScreen = ({navigation}) => {
     return total;
   };
 
-  const handleAddCartDB = (cart) => {
+  const handleAddCartDB = (cart, idQR) => {
+    const idBill = 1;
+
     cart.length > 0
       ? firestore()
           .collection('Bill')
@@ -106,6 +115,7 @@ const CartScreen = ({navigation}) => {
             CartPrice: handleTinhTong(),
             product: firebase.firestore.FieldValue.arrayUnion(...cart),
             quantity: qty.reduce((a, b) => a + b, 0),
+            id: idQR ? idQR : idBill,
           })
           .then((doc) => {
             const IDDoc = doc.id;
@@ -191,7 +201,7 @@ const CartScreen = ({navigation}) => {
                 <PrimaryButton
                   title="THANH TOÁN"
                   onPress={() => {
-                    handleAddCartDB(cart);
+                    handleAddCartDB(cart, idQR);
                   }}
                 />
               </View>
