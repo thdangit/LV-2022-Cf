@@ -32,6 +32,7 @@ const ScanerScreen = ({navigation}) => {
 
   const onSuccess = (e) => {
     const id = e.data;
+    // console.log('id', id);
     getIdQR(id);
     setResulf(id);
     setScan(false);
@@ -43,8 +44,8 @@ const ScanerScreen = ({navigation}) => {
         if (doc.exists) {
           const qtycurrent = doc.data().quantity;
           setQuantityCurrent(qtycurrent);
-          console.log('số lượng ly trong qr quét đc', qtycurrent);
-          console.log('số lượng  total', total);
+          // console.log('số lượng ly trong qr quét đc', qtycurrent);
+          // console.log('số lượng  total', total);
 
           const qtyUpdate = qtycurrent + total;
 
@@ -52,11 +53,11 @@ const ScanerScreen = ({navigation}) => {
 
           if (qtyUpdate >= 10) {
             Alert.alert('Chúc mừng bạn đã nhận được khuyến mãi!!');
-            const SLLyKM = qtyUpdate % 10;
+            var SLLyKM = (qtyUpdate - (qtyUpdate % 10)) % 10;
             setQuantityUpdate(qtyUpdate);
             setslLyKM(SLLyKM);
           } else {
-            Alert.alert('Chưa đủ số lượng khuyến mãi!!');
+            // Alert.alert('Chưa đủ số lượng khuyến mãi!!');
             setQuantityUpdate(qtyUpdate);
           }
         }
@@ -144,15 +145,9 @@ const ScanerScreen = ({navigation}) => {
           <Text style={styles.buttonTextStyle}>START SCAN</Text>
         </TouchableOpacity>
 
-        <View>
-          {resulf && (
-            <TouchableOpacity
-              style={styles.buttonStyleUD}
-              onPress={handleUpdateQR}>
-              <Text style={styles.buttonTextStyle}>UPDATE</Text>
-            </TouchableOpacity>
-          )}
-        </View>
+        <TouchableOpacity style={styles.buttonStyleUD} onPress={handleUpdateQR}>
+          <Text style={styles.buttonTextStyle}>UPDATE</Text>
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   ) : (
@@ -161,6 +156,7 @@ const ScanerScreen = ({navigation}) => {
         <Icon name="arrow-back-ios" size={28} onPress={navigation.goBack} />
         <Text style={{fontSize: 20, fontWeight: 'bold'}}>Quét QR</Text>
       </View>
+      <View style={{height: 30}}></View>
 
       <QRCodeScanner
         style={styles.qrcode}
@@ -172,14 +168,14 @@ const ScanerScreen = ({navigation}) => {
       />
       <View style={styles.containerSC}>
         <TouchableOpacity
-          style={styles.buttonStyle}
+          style={styles.buttonSC}
           onPress={() => scanner.current.reactivate()}>
-          <Text style={styles.buttonTextStyle}>SCAN AGAIN</Text>
+          <Text style={styles.buttonTextSC}>SCAN AGAIN</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={styles.buttonStyleST}
+          style={styles.buttonSC}
           onPress={() => setScan(false)}>
-          <Text style={styles.buttonTextStyle}>STOP</Text>
+          <Text style={styles.buttonTextSC}>STOP</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -205,11 +201,14 @@ const styles = StyleSheet.create({
   },
   containerSC: {
     backgroundColor: 'white',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     alignItems: 'center',
     textAlign: 'center',
     padding: 10,
     marginTop: 385,
+    display: 'flex',
+    flexDirection: 'row',
+    top: 100,
   },
   scanner: {
     backgroundColor: 'black',
@@ -226,6 +225,18 @@ const styles = StyleSheet.create({
     marginTop: 5,
     padding: 5,
     width: '80%',
+    marginBottom: 12,
+  },
+  buttonSC: {
+    backgroundColor: '#F9813A',
+    borderWidth: 0,
+    color: '#FFFFFF',
+    borderColor: '#51D8C7',
+    alignItems: 'center',
+    borderRadius: 30,
+    marginTop: 5,
+    padding: 5,
+    width: '45%',
     marginBottom: 12,
   },
   buttonStyleUD: {
@@ -270,6 +281,13 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
+  buttonTextSC: {
+    paddingVertical: 10,
+
+    fontSize: 14,
+    color: '#FFFFFF',
+    fontWeight: 'bold',
+  },
   content: {
     color: '#fff',
     marginBottom: 10,
@@ -311,7 +329,7 @@ const styles = StyleSheet.create({
   },
   rnCamera: {
     flex: 1,
-    width: '94%',
+    width: '100%',
     alignSelf: 'center',
   },
   centerText: {
@@ -333,5 +351,13 @@ const styles = StyleSheet.create({
   },
   qrcode: {
     height: 20,
+  },
+  viewBT: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    textAlign: 'center',
+    padding: 10,
+    marginTop: 10,
+    width: 100,
   },
 });

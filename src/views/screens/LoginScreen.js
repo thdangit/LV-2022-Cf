@@ -44,7 +44,7 @@ const LoginScreen = () => {
       })
       .catch((error) => {
         // alert(error.message);
-        // Alert.alert('Vui lòng kiểm tra lại thông tin!');
+        Alert.alert('Vui lòng kiểm tra lại thông tin!');
       });
   };
 
@@ -58,7 +58,7 @@ const LoginScreen = () => {
             textAlign: 'center',
             color: '#7A2B02',
           }}>
-          Chuỗi cửa hàng Lamon Cofee
+          Chuỗi cửa hàng Lamon Coffee
         </Text>
         <Text
           style={{
