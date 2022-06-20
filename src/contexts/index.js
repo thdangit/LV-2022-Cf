@@ -13,9 +13,11 @@ export function Context({children}) {
   const [idQR, setIdQR] = useState('');
   const [phone, setPhone] = useState('');
   const [arrIdQR, setArrIdQR] = useState([]);
+  const [idUser, setIdUser] = useState('');
+  const [inforUser, setInForUser] = useState({});
 
-  console.log('idQR ne', idQR);
-
+  // add to cart
+  // console.log('idQR ne', idQR);
   // item : {item}
   const addToCart = (item) => {
     const index = cart.findIndex((v) => v.id === item.id);
@@ -27,17 +29,14 @@ export function Context({children}) {
       cloneCart[index].quantity += 1;
       setCart(cloneCart);
     }
-
     // Alert.alert('Thêm  thành công!');
   };
-
   // true la tang
   const updateQuantity = (index, isPlus) => {
     let cloneCart = [...cart];
     cloneCart[index].quantity += isPlus ? 1 : -1;
     setCart(cloneCart);
   };
-
   const clearCart = () => {
     setCart([]);
     // setIdQR(null);
@@ -46,6 +45,7 @@ export function Context({children}) {
     setIdQR('No data');
   };
 
+  //xóa sản phẩm
   const handleXoaSP = (idSanPham) => {
     let index = cart.findIndex((item) => {
       return item.id === idSanPham;
@@ -73,35 +73,7 @@ export function Context({children}) {
     setCart(cloneCart);
   };
 
-  // gettin current user uid
-  const GetUserUid = () => {
-    firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        console.log(user.uid);
-        console.log(user.email);
-      }
-    });
-  };
-
-  //get id doc bill
-  const handleGetIdDoc = () => {
-    firestore()
-      .collection('Bill')
-      .get()
-      .then((querySnapshot) => {
-        // console.log('Total users: ', querySnapshot.size);
-        querySnapshot.forEach((doc) => {
-          console.log(
-            'Doc ID: ',
-            doc.id,
-            // documentSnapshot.data(),
-          );
-          return doc.id;
-        });
-      });
-    // console.log('Bill', Bill);
-  };
-  // handleGetIdDoc();
+  // lấy id bill
   const handleGetIDBill = () => {
     firestore()
       .collection('QRCode')
@@ -113,12 +85,11 @@ export function Context({children}) {
       });
   };
 
+  // lấy id doc trong bill
   const getIDDoc = (IDDoc) => {
     // console.log(IDDoc);
     return setIDDoc(IDDoc);
   };
-
-  //get id doc qr
 
   const getIdQR = (idQR) => {
     return setIdQR(idQR);
@@ -135,8 +106,6 @@ export function Context({children}) {
         });
       });
   };
-
-  // getIDDocQRCode();
 
   //get id doc qr
   const handleGetIdDocQRCode = () => {
@@ -162,6 +131,26 @@ export function Context({children}) {
   const total = qty.reduce((a, b) => a + b, 0);
   // console.log('số lượng', total);
 
+  const getUserID = (idUser_) => {
+    setIdUser(idUser_);
+    return idUser;
+  };
+
+  const getInForUser = (idUser) => {
+    firestore()
+      .collection('users')
+      .doc(idUser)
+      .get()
+      .then((documentSnapshot) => {
+        console.log('User exists: ', documentSnapshot.exists);
+
+        if (documentSnapshot.exists) {
+          console.log('User data: ', documentSnapshot.data());
+          setInForUser(documentSnapshot.data());
+        }
+      });
+  };
+
   return (
     <CartContext.Provider
       value={{
@@ -172,10 +161,8 @@ export function Context({children}) {
         updateQuantity,
         handleXoaSP,
         handleDecreaseIncrease,
-        GetUserUid,
         getIDDoc,
         total,
-        handleGetIdDoc,
         handleGetIDBill,
         getIDDocQRCode,
         getIdQR,
@@ -183,6 +170,10 @@ export function Context({children}) {
         clearIDQR,
         handleGetIdDocQRCode,
         qty,
+        getUserID,
+        idUser,
+        getInForUser,
+        inforUser,
       }}>
       {children}
     </CartContext.Provider>

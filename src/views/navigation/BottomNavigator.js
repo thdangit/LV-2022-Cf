@@ -9,6 +9,7 @@ import CartScreen from '../screens/CartScreen';
 import {useAppContext} from '../../contexts/index';
 import QRScreen from './../screens/QRScreen';
 import ScanerScreen from './../screens/ScanerScreen';
+import ProfileScreen from './../screens/ProfileScreen';
 
 const Tab = createBottomTabNavigator();
 
@@ -47,8 +48,8 @@ const BottomNavigator = () => {
         }}
       />
       <Tab.Screen
-        name="Search"
-        component={HomeScreen}
+        name="Profile"
+        component={ProfileScreen}
         options={{
           tabBarIcon: ({color}) => (
             <View
@@ -64,7 +65,7 @@ const BottomNavigator = () => {
                 top: -25,
                 elevation: 5,
               }}>
-              <Icon name="search" color={COLORS.primary} size={28} />
+              <Icon name="account-circle" size={28} color={COLORS.primary} />
             </View>
           ),
         }}

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   Dimensions,
   Image,
@@ -23,9 +23,17 @@ const {width} = Dimensions.get('screen');
 const cardWidth = width / 2 - 20;
 import {auth} from '../../config-firebase';
 import {useNavigation} from '@react-navigation/core';
+import {Tooltip} from 'react-native-elements';
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {useAppContext} from './../../contexts/index';
+import {firestore} from '@react-native-firebase/firestore';
 
 const HomeScreen = ({navigation}) => {
-  const [selectedCategoryIndex, setSelectedCategoryIndex] = React.useState(0);
+  const {inforUser, getInForUser, idUser, getUserID} = useAppContext();
+
+  const [selectedCategoryIndex, setSelectedCategoryIndex] = useState(0);
+  const [toolTip, setToolTip] = useState(true);
 
   const handleSignOut = () => {
     auth
@@ -34,6 +42,11 @@ const HomeScreen = ({navigation}) => {
         navigation.replace('LoginScreen');
       })
       .catch((error) => alert(error.message));
+    console.log('first');
+  };
+
+  const toggleToolTip = () => {
+    setToolTip(!toolTip);
   };
 
   const ListCategories = () => {
@@ -79,40 +92,6 @@ const HomeScreen = ({navigation}) => {
       </ScrollView>
     );
   };
-  const Card = ({food}) => {
-    return (
-      <TouchableHighlight
-        underlayColor={COLORS.white}
-        activeOpacity={0.9}
-        onPress={() => navigation.navigate('DetailsScreen', food)}>
-        <View style={style.card}>
-          <View style={{alignItems: 'center', top: -10, left: -7}}>
-            <Image source={food.image} style={{height: 120, width: 120}} />
-          </View>
-          <View style={{marginHorizontal: 20}}>
-            <Text style={{fontSize: 18, fontWeight: 'bold'}}>{food.name}</Text>
-            <Text style={{fontSize: 14, color: COLORS.grey, marginTop: 2}}>
-              {food.ingredients}
-            </Text>
-          </View>
-          <View
-            style={{
-              marginTop: 10,
-              marginHorizontal: 20,
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-            }}>
-            <Text style={{fontSize: 18, fontWeight: 'bold'}}>
-              {food.price} VNĐ
-            </Text>
-            <View style={style.addToCartBtn}>
-              <Icon name="add" size={20} color={COLORS.white} />
-            </View>
-          </View>
-        </View>
-      </TouchableHighlight>
-    );
-  };
 
   return (
     <SafeAreaView style={{flex: 1, backgroundColor: COLORS.white}}>
@@ -121,7 +100,7 @@ const HomeScreen = ({navigation}) => {
           <View style={{flexDirection: 'row'}}>
             <Text style={{fontSize: 24}}>Xin chào,</Text>
             <Text style={{fontSize: 24, fontWeight: 'bold', marginLeft: 10}}>
-              Hai Dang
+              {inforUser.FullName}
             </Text>
           </View>
           <Text style={{marginTop: 5, fontSize: 20, color: COLORS.grey}}>
@@ -129,9 +108,69 @@ const HomeScreen = ({navigation}) => {
           </Text>
         </View>
 
-        <TouchableOpacity onPress={handleSignOut} style={style.LogoutBtn}>
-          <Icon name="logout" size={18} color={COLORS.white} />
+        <TouchableHighlight style={{position: 'relative', marginTop: -2}}>
+          <Tooltip
+            style={{position: 'absolute', top: -10}}
+            backgroundColor={COLORS.light}
+            popover={
+              <View>
+                <Text>Chưa có thông báo!</Text>
+              </View>
+            }>
+            <Icon name="notifications" size={32} color={COLORS.primary} />
+          </Tooltip>
+        </TouchableHighlight>
+        <TouchableOpacity
+          style={style.LogoutBtn}
+          onPress={() => toggleToolTip()}>
+          <Icon name="more-vert" size={25} color={COLORS.primary} />
         </TouchableOpacity>
+        {!toolTip && (
+          <View
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              width: '50%',
+              position: 'absolute',
+              right: 45,
+              top: 20,
+              zIndex: 110,
+              backgroundColor: COLORS.light,
+              padding: 10,
+            }}>
+            <TouchableOpacity
+              style={style.ViewTool}
+              onPress={() => navigation.navigate('ProfileScreen')}>
+              <Text
+                style={{
+                  color: COLORS.light,
+                  marginRight: 10,
+                  fontSize: 18,
+                  fontWeight: 'bold',
+                }}>
+                Hồ sơ
+              </Text>
+              <Icon name="account-circle" size={18} color={COLORS.light} />
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => {
+                handleSignOut();
+              }}
+              style={style.ViewTool}>
+              <Text
+                style={{
+                  color: COLORS.light,
+                  marginRight: 10,
+                  fontSize: 18,
+                  fontWeight: 'bold',
+                }}>
+                Đăng xuất
+              </Text>
+              <Icon name="logout" size={18} color={COLORS.light} />
+            </TouchableOpacity>
+          </View>
+        )}
       </View>
       <View
         style={{
@@ -164,6 +203,7 @@ const style = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingHorizontal: 20,
+    // position: 'relative',
   },
   inputContainer: {
     flex: 1,
@@ -183,15 +223,28 @@ const style = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  ViewTool: {
+    width: '100%',
+    // height: 25,
+    backgroundColor: COLORS.primary,
+    borderRadius: 5,
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 2,
+    padding: 10,
+    display: 'flex',
+    flexDirection: 'row',
+  },
   LogoutBtn: {
     width: 30,
     height: 30,
     marginLeft: 10,
     marginTop: 5,
-    backgroundColor: COLORS.primary,
+    backgroundColor: COLORS.light,
     borderRadius: 50,
     justifyContent: 'center',
     alignItems: 'center',
+    marginTop: -2,
   },
   categoriesListContainer: {
     paddingVertical: 30,

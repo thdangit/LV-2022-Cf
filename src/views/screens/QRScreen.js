@@ -46,9 +46,9 @@ const QRScreen = ({navigation}) => {
             const idQR = doc.id;
             setQrvalue(idQR);
             Alert.alert('Tạo qr thành công!');
-            setName('');
-            setQuantity('');
-            clearCart();
+            // setName('');
+            // setQuantity('');
+            // clearCart();
           })
           .catch((err) => {
             Alert.alert('Err', err);
@@ -77,7 +77,7 @@ const QRScreen = ({navigation}) => {
       <View style={styles.container}>
         <QRCode
           // value={[{soluong: quantity}, {id: idDoc}]}
-          value={idQR ? idQR : 'NaN'}
+          value={qrvalue ? qrvalue : 'NaN'}
           size={200}
           color="#F9813A"
           backgroundColor="white"
@@ -111,7 +111,7 @@ const QRScreen = ({navigation}) => {
         />
         <TouchableOpacity
           style={styles.buttonStyle}
-          onPress={() => handleCreateQR(quantity, idDoc)}>
+          onPress={() => handleCreateQR(quantity)}>
           <Text style={styles.buttonTextStyle}>TẠO QR CODE</Text>
         </TouchableOpacity>
         <TouchableOpacity

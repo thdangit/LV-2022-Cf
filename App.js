@@ -9,6 +9,7 @@ import BottomNavigator from './src/views/navigation/BottomNavigator';
 import OnBoardScreen from './src/views/screens/OnBoardScreen';
 import LoginScreen from './src/views/screens/LoginScreen';
 import {Context} from './src/contexts/index';
+import ProfileScreen from './src/views/screens/ProfileScreen';
 
 const Stack = createStackNavigator();
 
@@ -22,6 +23,7 @@ const App = () => {
           <Stack.Screen name="BoardScreen" component={OnBoardScreen} />
           <Stack.Screen name="Home" component={BottomNavigator} />
           <Stack.Screen name="DetailsScreen" component={DetailsScreen} />
+          <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </Context>

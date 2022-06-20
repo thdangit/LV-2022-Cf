@@ -104,8 +104,14 @@ const CartScreen = ({navigation}) => {
   };
 
   const handleAddCartDB = (cart, idQR) => {
-    const idBill = 1;
+    console.log('idQR', idQR);
+    if (idQR === 'No data') {
+      return idQR === 1;
+    }
 
+    // if ((qty.reduce((a, b) => a + b, 0))>=10) {
+
+    // }
     cart.length > 0
       ? firestore()
           .collection('Bill')
@@ -115,7 +121,7 @@ const CartScreen = ({navigation}) => {
             CartPrice: handleTinhTong(),
             product: firebase.firestore.FieldValue.arrayUnion(...cart),
             quantity: qty.reduce((a, b) => a + b, 0),
-            id: idQR ? idQR : idBill,
+            id: idQR,
           })
           .then((doc) => {
             const IDDoc = doc.id;
@@ -145,7 +151,7 @@ const CartScreen = ({navigation}) => {
     <SafeAreaView style={{backgroundColor: COLORS.white, flex: 1}}>
       <View style={style.header}>
         <Icon name="arrow-back-ios" size={28} onPress={navigation.goBack} />
-        <Text style={{fontSize: 20, fontWeight: 'bold'}}>Cart</Text>
+        <Text style={{fontSize: 20, fontWeight: 'bold'}}>Giỏ hàng</Text>
       </View>
       <View style={style.inputContainer}>
         <TextInput

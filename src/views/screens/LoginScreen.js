@@ -14,8 +14,11 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from 'firebase/auth';
+import {useAppContext} from './../../contexts/index';
 
 const LoginScreen = () => {
+  const {getUserID} = useAppContext();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -24,6 +27,7 @@ const LoginScreen = () => {
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
+        // Alert.alert('Đăng nhập thành công!');
         navigation.replace('BoardScreen');
       }
     });
@@ -31,24 +35,16 @@ const LoginScreen = () => {
     return unsubscribe;
   }, []);
 
-  // const handleSignUp = () => {
-  //   createUserWithEmailAndPassword(auth, email, password)
-  //     .then((userCredentials) => {
-  //       const user = userCredentials.user;
-  //       console.log('Registered with:', user.email);
-  //     })
-  //     .catch((error) => alert(error.message));
-  // };
-
   const handleLogin = () => {
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredentials) => {
         const user = userCredentials.user;
         console.log('Logged in with:', user.email);
+        getUserID(user.uid);
       })
       .catch((error) => {
-        alert(error.message);
-        Alert.alert('Vui lòng kiểm tra lại thông tin!');
+        // alert(error.message);
+        // Alert.alert('Vui lòng kiểm tra lại thông tin!');
       });
   };
 
@@ -62,7 +58,7 @@ const LoginScreen = () => {
             textAlign: 'center',
             color: '#7A2B02',
           }}>
-          Chuỗi cửa hàng Lamon Cafe
+          Chuỗi cửa hàng Lamon Cofee
         </Text>
         <Text
           style={{
@@ -71,7 +67,7 @@ const LoginScreen = () => {
             textAlign: 'center',
             color: '#908e8c',
           }}>
-          Welcome to Lamon Coffe!
+          Chào mừng đến với Lamon Coffee!
         </Text>
       </View>
       <View style={styles.inputContainer}>
@@ -82,7 +78,7 @@ const LoginScreen = () => {
           style={styles.input}
         />
         <TextInput
-          placeholder="Password"
+          placeholder="Mật khẩu"
           value={password}
           onChangeText={(text) => setPassword(text)}
           style={styles.input}
@@ -92,7 +88,7 @@ const LoginScreen = () => {
 
       <View style={styles.buttonContainer}>
         <TouchableOpacity onPress={handleLogin} style={styles.button}>
-          <Text style={styles.buttonText}>Đăng nhập</Text>
+          <Text style={styles.buttonText}>ĐĂNG NHẬP</Text>
         </TouchableOpacity>
         {/* <TouchableOpacity
           onPress={handleSignUp}

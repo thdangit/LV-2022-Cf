@@ -19,6 +19,7 @@ import firestore from '@react-native-firebase/firestore';
 const ScanerScreen = ({navigation}) => {
   const {total, getIdQR} = useAppContext();
   const scanner = useRef(null);
+
   const [scan, setScan] = useState(false);
   const [resulf, setResulf] = useState(null);
   const [quantityCurrent, setQuantityCurrent] = useState(null);
@@ -64,7 +65,7 @@ const ScanerScreen = ({navigation}) => {
 
   const handleUpdateQR = () => {
     // console.log('first');
-    resulf
+    total > 0
       ? firestore()
           .collection('QRCode')
           .doc(resulf)
@@ -94,20 +95,47 @@ const ScanerScreen = ({navigation}) => {
       </View>
       <View style={styles.container}>
         <View style={styles.content}>
-          <Text style={styles.contentText}>ID: {resulf}</Text>
-          <Text style={styles.contentText}>
-            Số ly hiện có: {quantityCurrent}
-          </Text>
-          <Text style={styles.contentText}>Số ly mua: {total}</Text>
+          <View style={styles.itemCt}>
+            <Text style={{color: COLORS.grey}}>ID QR: </Text>
+            <Text style={{color: COLORS.primary, fontWeight: 'bold'}}>
+              {' '}
+              {resulf}
+            </Text>
+          </View>
+
+          <View style={styles.itemCt}>
+            <Text style={{color: COLORS.grey}}>Đã mua: </Text>
+            <Text style={{color: COLORS.primary, fontWeight: 'bold'}}>
+              {' '}
+              {quantityCurrent}
+            </Text>
+          </View>
+
+          <View style={styles.itemCt}>
+            <Text style={{color: COLORS.grey}}>Đang mua: </Text>
+            <Text style={{color: COLORS.primary, fontWeight: 'bold'}}>
+              {' '}
+              {total}
+            </Text>
+          </View>
+
+          <View style={styles.itemCt}>
+            <Text style={{color: COLORS.grey}}>Khuyến mãi: </Text>
+            <Text style={{color: COLORS.primary, fontWeight: 'bold'}}>
+              {' '}
+              {slLyKM}
+            </Text>
+          </View>
         </View>
 
         <View style={styles.content}>
-          <Text style={styles.contentText}>
-            Số lượng ly khuyến mãi: {slLyKM}
-          </Text>
-          <Text style={styles.contentText}>
-            Tổng ly tích được: {quantityUpdate}
-          </Text>
+          <View style={styles.itemCt}>
+            <Text style={{color: COLORS.grey, fontWeight: 'bold'}}>TỔNG: </Text>
+            <Text style={{color: COLORS.primary, fontWeight: 'bold'}}>
+              {' '}
+              {quantityUpdate}
+            </Text>
+          </View>
         </View>
 
         <TouchableOpacity
@@ -116,9 +144,15 @@ const ScanerScreen = ({navigation}) => {
           <Text style={styles.buttonTextStyle}>START SCAN</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.buttonStyleUD} onPress={handleUpdateQR}>
-          <Text style={styles.buttonTextStyle}>UPDATE</Text>
-        </TouchableOpacity>
+        <View>
+          {resulf && (
+            <TouchableOpacity
+              style={styles.buttonStyleUD}
+              onPress={handleUpdateQR}>
+              <Text style={styles.buttonTextStyle}>UPDATE</Text>
+            </TouchableOpacity>
+          )}
+        </View>
       </View>
     </SafeAreaView>
   ) : (
@@ -140,7 +174,7 @@ const ScanerScreen = ({navigation}) => {
         <TouchableOpacity
           style={styles.buttonStyle}
           onPress={() => scanner.current.reactivate()}>
-          <Text style={styles.buttonTextStyle}>OK! Got It</Text>
+          <Text style={styles.buttonTextStyle}>SCAN AGAIN</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.buttonStyleST}
@@ -160,7 +194,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginHorizontal: 20,
-    marginBottom: 80,
+    marginBottom: 20,
   },
   container: {
     backgroundColor: 'white',
@@ -245,11 +279,35 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   contentText: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginTop: 10,
+    fontSize: 16,
+    fontWeight: 'thin',
     textAlign: 'left',
-    width: '80%',
+    backgroundColor: COLORS.light,
+    borderWidth: 0,
+    color: '#555',
+    borderColor: '#51D8C7',
+    alignItems: 'center',
+    borderRadius: 10,
+    marginBottom: 5,
+    padding: 15,
+    width: '100%',
+  },
+  itemCt: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    fontSize: 16,
+    fontWeight: 'thin',
+    textAlign: 'left',
+    backgroundColor: COLORS.light,
+    borderWidth: 0,
+    color: '#555',
+    borderColor: '#51D8C7',
+    alignItems: 'center',
+    borderRadius: 10,
+    marginBottom: 5,
+    padding: 15,
+    width: '100%',
   },
   rnCamera: {
     flex: 1,
