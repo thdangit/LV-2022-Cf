@@ -16,6 +16,8 @@ import {
   signInWithEmailAndPassword,
 } from 'firebase/auth';
 import {useAppContext} from './../../contexts/index';
+import firestore from '@react-native-firebase/firestore';
+import firebase from '@react-native-firebase/app';
 
 const LoginScreen = () => {
   const {getUserID} = useAppContext();
@@ -25,16 +27,17 @@ const LoginScreen = () => {
 
   const navigation = useNavigation();
 
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      if (user) {
-        // Alert.alert('Đăng nhập thành công!');
-        navigation.replace('BoardScreen');
-      }
-    });
+  // useEffect(() => {
+  //   const unsubscribe = auth.onAuthStateChanged((user) => {
+  //     if (user) {
+  //       // Alert.alert('Đăng nhập thành công!');
+  //       console.log('user', user);
+  //       navigation.replace('BoardScreen');
+  //     }
+  //   });
 
-    return unsubscribe;
-  }, []);
+  //   return unsubscribe;
+  // }, []);
 
   const handleLogin = () => {
     signInWithEmailAndPassword(auth, email, password)
@@ -42,6 +45,7 @@ const LoginScreen = () => {
         const user = userCredentials.user;
         console.log('Logged in with:', user.email);
         getUserID(user.uid);
+        navigation.replace('BoardScreen');
       })
       .catch((error) => {
         alert(error.message);

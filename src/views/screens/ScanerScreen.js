@@ -26,6 +26,8 @@ const ScanerScreen = ({navigation}) => {
   const [quantityCurrent, setQuantityCurrent] = useState(null);
   const [quantityUpdate, setQuantityUpdate] = useState(null);
   const [slLyKM, setslLyKM] = useState(null);
+  const [slLyKMMoi, setslLyKMMoi] = useState(null);
+  const [slLyKMCu, setslLyKMMoiCu] = useState(null);
 
   useEffect(() => {
     setResulf(null);
@@ -46,6 +48,7 @@ const ScanerScreen = ({navigation}) => {
           const qtycurrent = doc.data().quantity;
           const lyKhuyenMaiHienTai = doc.data().lyKhuyenMai;
 
+          setslLyKMMoiCu(lyKhuyenMaiHienTai);
           setQuantityCurrent(qtycurrent);
           // console.log('số lượng ly trong qr quét đc', qtycurrent);
           // console.log('số lượng  total', total);
@@ -57,6 +60,9 @@ const ScanerScreen = ({navigation}) => {
           if (qtyUpdate > 10) {
             var SLLyKM = (qtyUpdate - (qtyUpdate % 10)) / 10;
             setQuantityUpdate(qtyUpdate);
+            const slKMMoi = SLLyKM - lyKhuyenMaiHienTai;
+
+            setslLyKMMoi(slKMMoi);
 
             if (SLLyKM > lyKhuyenMaiHienTai) {
               setslLyKM(SLLyKM);
@@ -85,9 +91,13 @@ const ScanerScreen = ({navigation}) => {
             setResulf('');
             setQuantityCurrent('');
             setQuantityUpdate('');
+            setslLyKM('');
             navigation.navigate('Cart');
           })
-          .catch((err) => console.log(err))
+          .catch((err) => {
+            console.log(err);
+            Alert.alert('Lỗi dữ liệu không tồn tại!!');
+          })
       : Alert.alert('Chưa có dữ liệu');
   };
 
@@ -125,14 +135,6 @@ const ScanerScreen = ({navigation}) => {
               {total}
             </Text>
           </View>
-
-          <View style={styles.itemCt}>
-            <Text style={{color: COLORS.grey}}>Khuyến mãi: </Text>
-            <Text style={{color: COLORS.primary, fontWeight: 'bold'}}>
-              {' '}
-              {slLyKM}
-            </Text>
-          </View>
         </View>
 
         <View style={styles.content}>
@@ -151,19 +153,36 @@ const ScanerScreen = ({navigation}) => {
           <Text style={styles.buttonTextStyle}>START SCAN</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.buttonStyleUD} onPress={handleUpdateQR}>
-          <Text style={styles.buttonTextStyle}>UPDATE</Text>
-        </TouchableOpacity>
-        <View style={{height: 100}}>
-          <Image
-            style={{
-              width: '100%',
-              resizeMode: 'contain',
-              top: 0,
-            }}
-            source={require('../../assets/bg2.png')}
-          />
-        </View>
+        {resulf ? (
+          <TouchableOpacity
+            style={styles.buttonStyleUD}
+            onPress={handleUpdateQR}>
+            <Text style={styles.buttonTextStyle}>UPDATE</Text>
+          </TouchableOpacity>
+        ) : (
+          <View></View>
+        )}
+
+        {slLyKM > 0 ? (
+          <View style={styles.content}>
+            <View style={styles.itemCt}>
+              <Text style={{color: COLORS.grey}}>Khuyến mãi cũ: </Text>
+              <Text style={{color: COLORS.primary, fontWeight: 'bold'}}>
+                {' '}
+                {slLyKMCu}
+              </Text>
+            </View>
+            <View style={styles.itemCt}>
+              <Text style={{color: COLORS.grey}}>Khuyến mãi mới: </Text>
+              <Text style={{color: COLORS.primary, fontWeight: 'bold'}}>
+                {' '}
+                {slLyKMMoi}
+              </Text>
+            </View>
+          </View>
+        ) : (
+          <View style={styles.itemKM}></View>
+        )}
       </View>
     </SafeAreaView>
   ) : (
@@ -343,6 +362,7 @@ const styles = StyleSheet.create({
     padding: 15,
     width: '100%',
   },
+
   rnCamera: {
     flex: 1,
     width: '100%',
