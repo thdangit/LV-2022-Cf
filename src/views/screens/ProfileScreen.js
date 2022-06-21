@@ -26,20 +26,35 @@ import firebase from '@react-native-firebase/app';
 function ProfileScreen({navigation}) {
   const {idUser, getUserID, getInForUser, inforUser} = useAppContext();
 
-  const Test = (idUser) => {
-    console.log('idUser', idUser);
-    console.log('idChamCong', idChamCong);
+  const [dataUser, setDataUser] = useState({});
 
-    // firestore()
-    //   .collection('chamcong')
-    //   .doc(idChamCong)
-    //   .update({
-    //     timestop: new Date().toLocaleString(),
-    //   })
-    //   .then(() => {
-    //     console.log('User updated!');
-    //   });
-  };
+  // const Test = (idUser) => {
+  //   console.log('idUser', idUser);
+  //   console.log('idChamCong', idChamCong);
+
+  // firestore()
+  //   .collection('chamcong')
+  //   .doc(idChamCong)
+  //   .update({
+  //     timestop: new Date().toLocaleString(),
+  //   })
+  //   .then(() => {
+  //     console.log('User updated!');
+  //   });
+  // };
+  // console.log('inforUser', inforUser);
+  useEffect(() => {
+    firestore()
+      .collection('users')
+      .doc(idUser)
+      .get()
+      .then((doc) => {
+        console.log('data', doc.data());
+        setDataUser(doc.data());
+      })
+      .catch((err) => console.log('err', err));
+  }, [idUser]);
+  console.log('inforUser', dataUser);
 
   return (
     <SafeAreaView style={{backgroundColor: COLORS.white, flex: 1}}>
@@ -50,37 +65,58 @@ function ProfileScreen({navigation}) {
       <View style={styles.container}>
         <View style={styles.content}>
           <View style={styles.itemAvt}>
-            <Text style={{color: COLORS.grey}}>Họ tên: </Text>
-            <Text style={{color: COLORS.primary, fontWeight: 'bold'}}>111</Text>
+            <Text style={{color: COLORS.grey, width: '30%'}}>Họ tên: </Text>
+            <Text style={{color: COLORS.primary, fontWeight: 'bold'}}>
+              {' '}
+              {dataUser ? dataUser.FullName : ''}
+            </Text>
           </View>
 
           <View style={styles.itemCt}>
             <Text style={{color: COLORS.grey}}>Email: </Text>
-            <Text style={{color: COLORS.primary, fontWeight: 'bold'}}>111</Text>
+            <Text style={{color: COLORS.primary, fontWeight: 'bold'}}>
+              {' '}
+              {dataUser ? dataUser.Email : ''}
+            </Text>
           </View>
 
           <View style={styles.itemCt}>
             <Text style={{color: COLORS.grey}}>Địa chỉ: </Text>
-            <Text style={{color: COLORS.primary, fontWeight: 'bold'}}>111</Text>
+            <Text style={{color: COLORS.primary, fontWeight: 'bold'}}>
+              {' '}
+              {dataUser ? dataUser.diachi : ''}
+            </Text>
           </View>
 
           <View style={styles.itemCt}>
             <Text style={{color: COLORS.grey}}>Giới tính: </Text>
-            <Text style={{color: COLORS.primary, fontWeight: 'bold'}}>111</Text>
+            <Text style={{color: COLORS.primary, fontWeight: 'bold'}}>
+              {' '}
+              {dataUser ? dataUser.gioitinh : ''}
+            </Text>
           </View>
 
           <View style={styles.itemCt}>
             <Text style={{color: COLORS.grey}}>Số điện thoại: </Text>
-            <Text style={{color: COLORS.primary, fontWeight: 'bold'}}>111</Text>
+            <Text style={{color: COLORS.primary, fontWeight: 'bold'}}>
+              {' '}
+              {dataUser ? dataUser.sdt : ''}
+            </Text>
           </View>
 
           <View style={styles.itemCtBT}>
             <Text style={{color: COLORS.grey}}>Xe: </Text>
-            <Text style={{color: COLORS.primary, fontWeight: 'bold'}}>111</Text>
+            <Text style={{color: COLORS.primary, fontWeight: 'bold'}}>
+              {' '}
+              {dataUser ? dataUser.xe : ''}
+            </Text>
           </View>
           <View style={styles.itemCt}>
             <Text style={{color: COLORS.grey}}>Lương cơ bản: </Text>
-            <Text style={{color: COLORS.primary, fontWeight: 'bold'}}>111</Text>
+            <Text style={{color: COLORS.primary, fontWeight: 'bold'}}>
+              {' '}
+              {dataUser ? dataUser.luongcoban : ''}
+            </Text>
           </View>
           <View style={{height: 300}}>
             <Image

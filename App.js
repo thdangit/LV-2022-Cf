@@ -17,7 +17,6 @@ const App = () => {
   return (
     <Context>
       <NavigationContainer>
-        {/* <StatusBar hidden={true} /> */}
         <Stack.Navigator screenOptions={{headerShown: false}}>
           <Stack.Screen name="LoginScreen" component={LoginScreen} />
           <Stack.Screen name="BoardScreen" component={OnBoardScreen} />

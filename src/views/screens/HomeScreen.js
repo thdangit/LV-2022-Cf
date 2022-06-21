@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   Dimensions,
   Image,
@@ -27,13 +27,15 @@ import {Tooltip} from 'react-native-elements';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {useAppContext} from './../../contexts/index';
-import {firestore} from '@react-native-firebase/firestore';
+import firestore from '@react-native-firebase/firestore';
+import firebase from '@react-native-firebase/app';
 
 const HomeScreen = ({navigation}) => {
   const {inforUser, getInForUser, idUser, getUserID} = useAppContext();
 
   const [selectedCategoryIndex, setSelectedCategoryIndex] = useState(0);
   const [toolTip, setToolTip] = useState(true);
+  const [dataUser, setDataUser] = useState({});
 
   const handleSignOut = () => {
     auth
@@ -48,6 +50,18 @@ const HomeScreen = ({navigation}) => {
   const toggleToolTip = () => {
     setToolTip(!toolTip);
   };
+
+  useEffect(() => {
+    firestore()
+      .collection('users')
+      .doc(idUser)
+      .get()
+      .then((doc) => {
+        console.log('data', doc.data());
+        setDataUser(doc.data());
+      })
+      .catch((err) => console.log('err', err));
+  }, [idUser]);
 
   const ListCategories = () => {
     return (
@@ -100,7 +114,7 @@ const HomeScreen = ({navigation}) => {
           <View style={{flexDirection: 'row'}}>
             <Text style={{fontSize: 24}}>Xin chào,</Text>
             <Text style={{fontSize: 24, fontWeight: 'bold', marginLeft: 10}}>
-              {inforUser.FullName}
+              {dataUser ? dataUser.FullName : ''}
             </Text>
           </View>
           <Text style={{marginTop: 5, fontSize: 20, color: COLORS.grey}}>

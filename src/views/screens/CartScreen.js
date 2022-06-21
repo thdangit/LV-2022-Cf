@@ -121,7 +121,7 @@ const CartScreen = ({navigation}) => {
             CartPrice: handleTinhTong(),
             product: firebase.firestore.FieldValue.arrayUnion(...cart),
             quantity: qty.reduce((a, b) => a + b, 0),
-            id: idQR,
+            id: idQR ? idQR : 1,
           })
           .then((doc) => {
             const IDDoc = doc.id;

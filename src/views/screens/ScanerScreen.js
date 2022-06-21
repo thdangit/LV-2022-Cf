@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Linking,
   Alert,
+  Image,
 } from 'react-native';
 import React, {useState, useRef, useEffect} from 'react';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -43,6 +44,8 @@ const ScanerScreen = ({navigation}) => {
       .then((doc) => {
         if (doc.exists) {
           const qtycurrent = doc.data().quantity;
+          const lyKhuyenMaiHienTai = doc.data().lyKhuyenMai;
+
           setQuantityCurrent(qtycurrent);
           // console.log('số lượng ly trong qr quét đc', qtycurrent);
           // console.log('số lượng  total', total);
@@ -51,11 +54,14 @@ const ScanerScreen = ({navigation}) => {
 
           console.log('số lượng tổng cộng update + total', qtyUpdate);
 
-          if (qtyUpdate >= 10) {
-            Alert.alert('Chúc mừng bạn đã nhận được khuyến mãi!!');
-            var SLLyKM = (qtyUpdate - (qtyUpdate % 10)) % 10;
+          if (qtyUpdate > 10) {
+            var SLLyKM = (qtyUpdate - (qtyUpdate % 10)) / 10;
             setQuantityUpdate(qtyUpdate);
-            setslLyKM(SLLyKM);
+
+            if (SLLyKM > lyKhuyenMaiHienTai) {
+              setslLyKM(SLLyKM);
+              Alert.alert('Chúc mừng bạn đã nhận được khuyến mãi!!');
+            }
           } else {
             // Alert.alert('Chưa đủ số lượng khuyến mãi!!');
             setQuantityUpdate(qtyUpdate);
@@ -148,6 +154,16 @@ const ScanerScreen = ({navigation}) => {
         <TouchableOpacity style={styles.buttonStyleUD} onPress={handleUpdateQR}>
           <Text style={styles.buttonTextStyle}>UPDATE</Text>
         </TouchableOpacity>
+        <View style={{height: 100}}>
+          <Image
+            style={{
+              width: '100%',
+              resizeMode: 'contain',
+              top: 0,
+            }}
+            source={require('../../assets/bg2.png')}
+          />
+        </View>
       </View>
     </SafeAreaView>
   ) : (

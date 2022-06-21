@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   View,
   Alert,
+  Image,
 } from 'react-native';
 import {auth} from '../../config-firebase';
 import {
@@ -43,7 +44,7 @@ const LoginScreen = () => {
         getUserID(user.uid);
       })
       .catch((error) => {
-        // alert(error.message);
+        alert(error.message);
         Alert.alert('Vui lòng kiểm tra lại thông tin!');
       });
   };
@@ -90,11 +91,16 @@ const LoginScreen = () => {
         <TouchableOpacity onPress={handleLogin} style={styles.button}>
           <Text style={styles.buttonText}>ĐĂNG NHẬP</Text>
         </TouchableOpacity>
-        {/* <TouchableOpacity
-          onPress={handleSignUp}
-          style={[styles.button, styles.buttonOutline]}>
-          <Text style={styles.buttonOutlineText}>Register</Text>
-        </TouchableOpacity> */}
+      </View>
+      <View style={{height: 100}}>
+        <Image
+          style={{
+            width: '100%',
+            resizeMode: 'contain',
+            top: 0,
+          }}
+          source={require('../../assets/bg2.png')}
+        />
       </View>
     </KeyboardAvoidingView>
   );

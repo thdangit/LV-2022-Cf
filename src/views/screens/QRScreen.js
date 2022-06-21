@@ -40,6 +40,7 @@ const QRScreen = ({navigation}) => {
             name: name,
             datetime: new Date().toLocaleString(),
             quantity: Number(quantity),
+            lyKhuyenMai: 0,
           })
           .then((doc) => {
             console.log('User added!');
@@ -79,7 +80,7 @@ const QRScreen = ({navigation}) => {
           // value={[{soluong: quantity}, {id: idDoc}]}
           value={qrvalue ? qrvalue : 'NaN'}
           size={200}
-          color="#F9813A"
+          color="#000"
           backgroundColor="white"
           logo={{
             url: 'https://raw.githubusercontent.com/AboutReact/sampleresource/master/logosmalltransparen.png',
@@ -87,7 +88,7 @@ const QRScreen = ({navigation}) => {
           logoSize={30}
           logoMargin={2}
           logoBorderRadius={15}
-          logoBackgroundColor="#7A2B02"
+          logoBackgroundColor="#000"
         />
         {idQR ? (
           <Text style={styles.textStyle}> ID: {idQR} </Text>
