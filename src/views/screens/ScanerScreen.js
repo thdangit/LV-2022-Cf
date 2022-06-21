@@ -46,9 +46,9 @@ const ScanerScreen = ({navigation}) => {
       .then((doc) => {
         if (doc.exists) {
           const qtycurrent = doc.data().quantity;
-          const lyKhuyenMaiHienTai = doc.data().lyKhuyenMai;
+          const lyDaKhuyenMai = doc.data().lyKhuyenMai;
 
-          setslLyKMMoiCu(lyKhuyenMaiHienTai);
+          setslLyKMMoiCu(lyDaKhuyenMai);
           setQuantityCurrent(qtycurrent);
           // console.log('số lượng ly trong qr quét đc', qtycurrent);
           // console.log('số lượng  total', total);
@@ -60,11 +60,13 @@ const ScanerScreen = ({navigation}) => {
           if (qtyUpdate > 10) {
             var SLLyKM = (qtyUpdate - (qtyUpdate % 10)) / 10;
             setQuantityUpdate(qtyUpdate);
-            const slKMMoi = SLLyKM - lyKhuyenMaiHienTai;
+            const slKMMoi = SLLyKM - lyDaKhuyenMai;
 
-            setslLyKMMoi(slKMMoi);
-
-            if (SLLyKM > lyKhuyenMaiHienTai) {
+            if (SLLyKM === lyDaKhuyenMai) {
+              setslLyKMMoi(lyDaKhuyenMai);
+              setslLyKM(SLLyKM);
+            }
+            if (SLLyKM > lyDaKhuyenMai) {
               setslLyKM(SLLyKM);
               Alert.alert('Chúc mừng bạn đã nhận được khuyến mãi!!');
             }
@@ -91,7 +93,7 @@ const ScanerScreen = ({navigation}) => {
             setResulf('');
             setQuantityCurrent('');
             setQuantityUpdate('');
-            setslLyKM('');
+            setslLyKM(0);
             navigation.navigate('Cart');
           })
           .catch((err) => {
@@ -99,6 +101,12 @@ const ScanerScreen = ({navigation}) => {
             Alert.alert('Lỗi dữ liệu không tồn tại!!');
           })
       : Alert.alert('Chưa có dữ liệu');
+  };
+
+  const handleClearQRSn = () => {
+    setQuantityCurrent('');
+    setQuantityUpdate('');
+    setResulf('');
   };
 
   const noData = 'chưa quét';
@@ -116,7 +124,7 @@ const ScanerScreen = ({navigation}) => {
             <Text style={{color: COLORS.grey}}>ID QR: </Text>
             <Text style={{color: COLORS.primary, fontWeight: 'bold'}}>
               {' '}
-              {resulf}
+              {resulf ? resulf : 'No data'}
             </Text>
           </View>
 
@@ -160,13 +168,17 @@ const ScanerScreen = ({navigation}) => {
             <Text style={styles.buttonTextStyle}>UPDATE</Text>
           </TouchableOpacity>
         ) : (
-          <View></View>
+          <TouchableOpacity
+            style={styles.buttonStyleUD}
+            onPress={handleClearQRSn}>
+            <Text style={styles.buttonTextStyle}>CLEAR</Text>
+          </TouchableOpacity>
         )}
 
         {slLyKM > 0 ? (
           <View style={styles.content}>
             <View style={styles.itemCt}>
-              <Text style={{color: COLORS.grey}}>Khuyến mãi cũ: </Text>
+              <Text style={{color: COLORS.grey}}>Đã khuyến mãi: </Text>
               <Text style={{color: COLORS.primary, fontWeight: 'bold'}}>
                 {' '}
                 {slLyKMCu}

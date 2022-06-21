@@ -33,7 +33,7 @@ const QRScreen = ({navigation}) => {
 
   const handleCreateQR = (quantity) => {
     console.log('object', quantity);
-    quantity.length >= 0
+    name
       ? firestore()
           .collection('QRCode')
           .add({
@@ -54,7 +54,7 @@ const QRScreen = ({navigation}) => {
           .catch((err) => {
             Alert.alert('Err', err);
           })
-      : Alert.alert('Vui lòng nhập số lượng!!');
+      : Alert.alert('Vui lòng nhập tên nhận biết!!');
 
     // console.log('id doc trong handle ne', idDoc);
     // console.log('soluong trong qr ne', quantity);
@@ -90,11 +90,11 @@ const QRScreen = ({navigation}) => {
           logoBorderRadius={15}
           logoBackgroundColor="#000"
         />
-        {idQR ? (
-          <Text style={styles.textStyle}> ID: {idQR} </Text>
-        ) : (
-          <Text style={styles.textStyle}> Số lượng: {quantity} </Text>
-        )}
+
+        <Text style={styles.textStyle}>
+          {' '}
+          Số lượng: {quantity ? quantity : 0}{' '}
+        </Text>
 
         <TextInput
           style={styles.textInputStyle}
