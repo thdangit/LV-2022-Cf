@@ -7,6 +7,7 @@ import {
   Linking,
   Alert,
   Image,
+  TextInput,
 } from 'react-native';
 import React, {useState, useRef, useEffect} from 'react';
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -28,6 +29,7 @@ const ScanerScreen = ({navigation}) => {
   const [slLyKM, setslLyKM] = useState(null);
   const [slLyKMMoi, setslLyKMMoi] = useState(null);
   const [slLyKMCu, setslLyKMMoiCu] = useState(null);
+  const [slLyNhan, setSlLyNhan] = useState(null);
 
   useEffect(() => {
     setResulf(null);
@@ -63,15 +65,16 @@ const ScanerScreen = ({navigation}) => {
             const slKMMoi = SLLyKM - lyDaKhuyenMai;
 
             if (SLLyKM === lyDaKhuyenMai) {
-              setslLyKMMoi(lyDaKhuyenMai);
+              setslLyKMMoi(0);
               setslLyKM(SLLyKM);
             }
             if (SLLyKM > lyDaKhuyenMai) {
+              setslLyKMMoi(slKMMoi);
               setslLyKM(SLLyKM);
               Alert.alert('Chúc mừng bạn đã nhận được khuyến mãi!!');
             }
           } else {
-            // Alert.alert('Chưa đủ số lượng khuyến mãi!!');
+            Alert.alert('Chưa đủ số lượng khuyến mãi!!');
             setQuantityUpdate(qtyUpdate);
           }
         }
@@ -107,6 +110,7 @@ const ScanerScreen = ({navigation}) => {
     setQuantityCurrent('');
     setQuantityUpdate('');
     setResulf('');
+    // slLyKM('');
   };
 
   const noData = 'chưa quét';
@@ -154,28 +158,7 @@ const ScanerScreen = ({navigation}) => {
             </Text>
           </View>
         </View>
-
-        <TouchableOpacity
-          style={styles.buttonStyle}
-          onPress={() => setScan(true)}>
-          <Text style={styles.buttonTextStyle}>START SCAN</Text>
-        </TouchableOpacity>
-
         {resulf ? (
-          <TouchableOpacity
-            style={styles.buttonStyleUD}
-            onPress={handleUpdateQR}>
-            <Text style={styles.buttonTextStyle}>UPDATE</Text>
-          </TouchableOpacity>
-        ) : (
-          <TouchableOpacity
-            style={styles.buttonStyleUD}
-            onPress={handleClearQRSn}>
-            <Text style={styles.buttonTextStyle}>CLEAR</Text>
-          </TouchableOpacity>
-        )}
-
-        {slLyKM > 0 ? (
           <View style={styles.content}>
             <View style={styles.itemCt}>
               <Text style={{color: COLORS.grey}}>Đã khuyến mãi: </Text>
@@ -191,9 +174,51 @@ const ScanerScreen = ({navigation}) => {
                 {slLyKMMoi}
               </Text>
             </View>
+
+            {slLyKMMoi ? (
+              <View style={styles.container_IP}>
+                <TextInput
+                  placeholder="Nhập ly nhận..."
+                  value={slLyNhan}
+                  onChangeText={(number) => setSlLyNhan(number)}
+                  style={styles.input}
+                  keyboardType="numeric"
+                />
+              </View>
+            ) : (
+              <View style={styles.itemKM}></View>
+            )}
           </View>
         ) : (
           <View style={styles.itemKM}></View>
+        )}
+
+        {resulf ? (
+          <>
+            <TouchableOpacity
+              style={styles.buttonStyleUD}
+              onPress={handleUpdateQR}>
+              <Text style={styles.buttonTextStyle}>UPDATE</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.buttonStyleUD}
+              onPress={handleClearQRSn}>
+              <Text style={styles.buttonTextStyle}>CLEAR</Text>
+            </TouchableOpacity>
+          </>
+        ) : (
+          <>
+            <TouchableOpacity
+              style={styles.buttonStyle}
+              onPress={() => setScan(true)}>
+              <Text style={styles.buttonTextStyle}>START SCAN</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.buttonStyleUD}
+              onPress={handleClearQRSn}>
+              <Text style={styles.buttonTextStyle}>CLEAR</Text>
+            </TouchableOpacity>
+          </>
         )}
       </View>
     </SafeAreaView>
@@ -285,6 +310,21 @@ const styles = StyleSheet.create({
     padding: 5,
     width: '45%',
     marginBottom: 12,
+  },
+  container_IP: {
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'center',
+    textAlign: 'center',
+    width: '100%',
+    paddingBottom: 5,
+  },
+  input: {
+    backgroundColor: '#E5E5E5',
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    borderRadius: 10,
+    width: '100%',
   },
   buttonStyleUD: {
     backgroundColor: '#F9813A',
