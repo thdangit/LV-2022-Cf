@@ -48,7 +48,7 @@ const LoginScreen = () => {
         navigation.replace('BoardScreen');
       })
       .catch((error) => {
-        alert(error.message);
+        // alert(error.message);
         Alert.alert('Vui lòng kiểm tra lại thông tin!');
       });
   };

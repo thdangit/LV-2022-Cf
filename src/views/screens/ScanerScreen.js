@@ -22,14 +22,28 @@ const ScanerScreen = ({navigation}) => {
   const {total, getIdQR} = useAppContext();
   const scanner = useRef(null);
 
+  // scanner
   const [scan, setScan] = useState(false);
   const [resulf, setResulf] = useState(null);
+
+  // số ly hiện tại trong firebase
   const [quantityCurrent, setQuantityCurrent] = useState(null);
+
+  // ly sau khi đã cập nhật
   const [quantityUpdate, setQuantityUpdate] = useState(null);
+
   const [slLyKM, setslLyKM] = useState(null);
+
   const [slLyKMMoi, setslLyKMMoi] = useState(null);
-  const [slLyKMCu, setslLyKMMoiCu] = useState(null);
-  const [slLyNhan, setSlLyNhan] = useState(null);
+
+  // ly được khuyến mãi trong firebase
+  const [slLyDuocKM, setslLyDuocKM] = useState(null);
+
+  // set ly đã nhận từ input vào firebase
+  const [slLyNhan, setSlLyNhan] = useState(0);
+
+  //  ly đã nhận trong firebase
+  const [lyNhan, setLyNhan] = useState(null);
 
   useEffect(() => {
     setResulf(null);
@@ -47,28 +61,37 @@ const ScanerScreen = ({navigation}) => {
       .get()
       .then((doc) => {
         if (doc.exists) {
+          // tổng ly hiện tại
           const qtycurrent = doc.data().quantity;
-          const lyDaKhuyenMai = doc.data().lyKhuyenMai;
-
-          setslLyKMMoiCu(lyDaKhuyenMai);
           setQuantityCurrent(qtycurrent);
-          // console.log('số lượng ly trong qr quét đc', qtycurrent);
-          // console.log('số lượng  total', total);
 
+          // số ly được khuyến mãi
+          const lyDuocKhuyenMai = doc.data().lyKhuyenMai;
+          setslLyDuocKM(lyDuocKhuyenMai);
+
+          // số ly khuyến mãi đã nhận
+          const lyDaNhan = doc.data().lyKMDaNhan;
+          setLyNhan(lyDaNhan);
+
+          // cộng số ly đang mua và đã mua trước đó trong firebase
           const qtyUpdate = qtycurrent + total;
 
-          console.log('số lượng tổng cộng update + total', qtyUpdate);
+          //logic
 
           if (qtyUpdate > 10) {
             var SLLyKM = (qtyUpdate - (qtyUpdate % 10)) / 10;
             setQuantityUpdate(qtyUpdate);
-            const slKMMoi = SLLyKM - lyDaKhuyenMai;
 
-            if (SLLyKM === lyDaKhuyenMai) {
+            const tongKM_DN = lyDaNhan + lyDuocKhuyenMai;
+            const slKMMoi = SLLyKM - lyDuocKhuyenMai;
+
+            if (SLLyKM === tongKM_DN) {
+              Alert.alert('Chưa đủ số lượng khuyến mãi!!');
+
               setslLyKMMoi(0);
               setslLyKM(SLLyKM);
             }
-            if (SLLyKM > lyDaKhuyenMai) {
+            if (SLLyKM > tongKM_DN) {
               setslLyKMMoi(slKMMoi);
               setslLyKM(SLLyKM);
               Alert.alert('Chúc mừng bạn đã nhận được khuyến mãi!!');
@@ -82,39 +105,53 @@ const ScanerScreen = ({navigation}) => {
   };
 
   const handleUpdateQR = () => {
-    // console.log('first');
-    total > 0
-      ? firestore()
-          .collection('QRCode')
-          .doc(resulf)
-          .update({
-            quantity: Number(quantityUpdate),
-            lyKhuyenMai: Number(slLyKM),
-          })
-          .then(() => {
-            Alert.alert('Cập nhật thành công!!');
-            setResulf('');
-            setQuantityCurrent('');
-            setQuantityUpdate('');
-            setslLyKM(0);
-            navigation.navigate('Cart');
-          })
-          .catch((err) => {
-            console.log(err);
-            Alert.alert('Lỗi dữ liệu không tồn tại!!');
-          })
-      : Alert.alert('Chưa có dữ liệu');
+    // xử lý data ly đã nhận
+    const totalKM = slLyDuocKM + slLyKMMoi;
+    if (slLyNhan > totalKM) {
+      Alert.alert('Số ly nhận phải nhỏ hơn số ly khuyến mãi!!');
+    } else {
+      // ly khuyến mãi sau khi nhập ly muốn nhận
+      const lyKM = totalKM - slLyNhan;
+
+      // cập nhật ly đã nhận
+      const lyDN = Number(slLyNhan) + Number(lyNhan);
+      total > 0
+        ? firestore()
+            .collection('QRCode')
+            .doc(resulf)
+            .update({
+              quantity: Number(quantityUpdate),
+              lyKhuyenMai: Number(lyKM),
+              lyKMDaNhan: lyDN,
+            })
+            .then(() => {
+              Alert.alert('Cập nhật thành công!!');
+              setResulf('');
+              setQuantityCurrent('');
+              setQuantityUpdate('');
+              setslLyKM(0);
+              setSlLyNhan('');
+              setLyNhan('');
+              setslLyDuocKM('');
+              navigation.navigate('Cart');
+            })
+            .catch((err) => {
+              console.log(err);
+              Alert.alert('Lỗi dữ liệu không tồn tại!!');
+            })
+        : Alert.alert('Chưa có dữ liệu');
+    }
   };
 
   const handleClearQRSn = () => {
     setQuantityCurrent('');
     setQuantityUpdate('');
     setResulf('');
+    setSlLyNhan('');
+    setLyNhan('');
+    setslLyKMMoi('');
     // slLyKM('');
   };
-
-  const noData = 'chưa quét';
-  const noDataKM = 'Chưa có khuyến mãi!!';
 
   return !scan ? (
     <SafeAreaView style={{backgroundColor: COLORS.white, flex: 1}}>
@@ -141,6 +178,14 @@ const ScanerScreen = ({navigation}) => {
           </View>
 
           <View style={styles.itemCt}>
+            <Text style={{color: COLORS.grey}}>KM Đã nhận: </Text>
+            <Text style={{color: COLORS.primary, fontWeight: 'bold'}}>
+              {' '}
+              {lyNhan ? lyNhan : '0'}
+            </Text>
+          </View>
+
+          <View style={styles.itemCt}>
             <Text style={{color: COLORS.grey}}>Đang mua: </Text>
             <Text style={{color: COLORS.primary, fontWeight: 'bold'}}>
               {' '}
@@ -148,7 +193,6 @@ const ScanerScreen = ({navigation}) => {
             </Text>
           </View>
         </View>
-
         <View style={styles.content}>
           <View style={styles.itemCt}>
             <Text style={{color: COLORS.grey, fontWeight: 'bold'}}>TỔNG: </Text>
@@ -158,40 +202,33 @@ const ScanerScreen = ({navigation}) => {
             </Text>
           </View>
         </View>
-        {resulf ? (
-          <View style={styles.content}>
-            <View style={styles.itemCt}>
-              <Text style={{color: COLORS.grey}}>Đã khuyến mãi: </Text>
-              <Text style={{color: COLORS.primary, fontWeight: 'bold'}}>
-                {' '}
-                {slLyKMCu}
-              </Text>
-            </View>
-            <View style={styles.itemCt}>
-              <Text style={{color: COLORS.grey}}>Khuyến mãi mới: </Text>
-              <Text style={{color: COLORS.primary, fontWeight: 'bold'}}>
-                {' '}
-                {slLyKMMoi}
-              </Text>
-            </View>
 
-            {slLyKMMoi ? (
-              <View style={styles.container_IP}>
-                <TextInput
-                  placeholder="Nhập ly nhận..."
-                  value={slLyNhan}
-                  onChangeText={(number) => setSlLyNhan(number)}
-                  style={styles.input}
-                  keyboardType="numeric"
-                />
-              </View>
-            ) : (
-              <View style={styles.itemKM}></View>
-            )}
+        <View style={styles.content}>
+          <View style={styles.itemCt}>
+            <Text style={{color: COLORS.grey}}>Khuyến mãi chưa nhận: </Text>
+            <Text style={{color: COLORS.primary, fontWeight: 'bold'}}>
+              {' '}
+              {slLyDuocKM}
+            </Text>
           </View>
-        ) : (
-          <View style={styles.itemKM}></View>
-        )}
+
+          <View style={styles.itemCt}>
+            <Text style={{color: COLORS.grey}}>Khuyến mãi mới: </Text>
+            <Text style={{color: COLORS.primary, fontWeight: 'bold'}}>
+              {' '}
+              {slLyKMMoi - lyNhan}
+            </Text>
+          </View>
+          <View style={styles.container_IP}>
+            <TextInput
+              placeholder="Nhập ly nhận..."
+              value={slLyNhan}
+              onChangeText={(number) => setSlLyNhan(number)}
+              style={styles.input}
+              keyboardType="numeric"
+            />
+          </View>
+        </View>
 
         {resulf ? (
           <>
@@ -262,7 +299,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginHorizontal: 20,
-    marginBottom: 20,
+    marginBottom: 1,
   },
   container: {
     backgroundColor: 'white',
@@ -294,7 +331,7 @@ const styles = StyleSheet.create({
     borderColor: '#51D8C7',
     alignItems: 'center',
     borderRadius: 30,
-    marginTop: 5,
+    marginTop: 1,
     padding: 5,
     width: '80%',
     marginBottom: 12,
@@ -306,7 +343,7 @@ const styles = StyleSheet.create({
     borderColor: '#51D8C7',
     alignItems: 'center',
     borderRadius: 30,
-    marginTop: 5,
+    marginTop: 1,
     padding: 5,
     width: '45%',
     marginBottom: 12,
@@ -333,10 +370,10 @@ const styles = StyleSheet.create({
     borderColor: '#51D8C7',
     alignItems: 'center',
     borderRadius: 30,
-    marginTop: 5,
+    marginTop: 2,
     padding: 5,
     width: '80%',
-    marginBottom: 12,
+    marginBottom: 1,
   },
   buttonStyleST: {
     backgroundColor: '#F9813A',
@@ -348,7 +385,7 @@ const styles = StyleSheet.create({
     marginTop: 5,
     padding: 5,
     width: '80%',
-    marginBottom: 25,
+    marginBottom: 15,
   },
   buttonStyleRL: {
     backgroundColor: '#F9813A',
@@ -377,7 +414,7 @@ const styles = StyleSheet.create({
   },
   content: {
     color: '#fff',
-    marginBottom: 10,
+    marginBottom: 4,
     textAlign: 'left',
     width: '80%',
     padding: 5,
